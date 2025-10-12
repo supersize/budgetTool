@@ -1,0 +1,482 @@
+/* 대시보드 전용 스타일 */
+.dashboard-content {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* 환영 섹션 */
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 30px rgba(44, 62, 80, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    opacity: 0.1;
+}
+
+.welcome-content {
+    flex: 1;
+    z-index: 1;
+    position: relative;
+}
+
+.welcome-content h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.welcome-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-item i {
+    font-size: 1.2rem;
+    color: var(--success-light);
+}
+
+.welcome-illustration {
+    font-size: 4rem;
+    opacity: 0.3;
+    color: var(--success-light);
+}
+
+/* 계좌 요약 카드 */
+.account-summary-card {
+    border-left: 4px solid var(--success-color);
+}
+
+.balance-summary {
+    text-align: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.balance-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.balance-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.balance-change {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+/* 계좌 그리드 */
+.accounts-grid {
+    display: flex;
+    gap: 1rem;
+    height: 100%;
+}
+
+.account-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.account-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.1);
+}
+
+.account-info {
+    flex: 1;
+}
+
+.account-bank {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.account-number {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin: 0.25rem 0;
+}
+
+.account-balance {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--success-color);
+}
+
+.account-chart {
+    width: 30px;
+    height: 50px;
+    display: flex;
+    align-items: end;
+    margin-left: 1rem;
+}
+
+.chart-bar {
+    width: 100%;
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--success-light) 100%);
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+}
+
+/* 빠른 액션 카드 */
+.quick-actions-card {
+    border-left: 4px solid var(--info-color);
+}
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    background: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+
+.quick-action-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateX(3px);
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.1);
+}
+
+.action-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+}
+
+.action-description {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+}
+
+/* 최근 거래내역 카드 */
+.recent-transactions-card {
+    border-left: 4px solid var(--warning-color);
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+}
+
+.transaction-item:hover {
+    background: white;
+    border-color: var(--primary-color);
+    transform: translateX(2px);
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.transaction-details {
+    flex: 1;
+}
+
+.transaction-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.transaction-account {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.transaction-time {
+    color: #adb5bd;
+    font-size: 0.75rem;
+}
+
+.transaction-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+/* 지출 분석 카드 */
+.spending-analysis-card {
+    border-left: 4px solid var(--danger-color);
+}
+
+.spending-summary .row {
+    margin-bottom: 1.5rem;
+}
+
+.spending-stat {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.budget-progress {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.progress-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.progress {
+    height: 12px;
+    border-radius: 6px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: 6px;
+    transition: width 0.6s ease;
+}
+
+/* 저축 목표 카드 */
+.savings-goal-card {
+    border-left: 4px solid var(--success-color);
+}
+
+.goal-item {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.goal-item:last-of-type {
+    margin-bottom: 1rem;
+}
+
+.goal-info {
+    margin-bottom: 1rem;
+}
+
+.goal-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+}
+
+.goal-amount {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.goal-progress .progress {
+    height: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+.goal-actions {
+    margin-top: 1rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 992px) {
+    .welcome-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .welcome-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .accounts-grid {
+        flex-direction: column;
+    }
+
+    .account-chart {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .balance-amount {
+        font-size: 1.5rem;
+    }
+
+    .spending-summary .row {
+        margin-bottom: 1rem;
+    }
+
+    .spending-stat {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .welcome-card {
+        padding: 1.5rem;
+    }
+
+    .welcome-stats {
+        gap: 1rem;
+    }
+
+    .stat-item {
+        font-size: 0.8rem;
+    }
+
+    .quick-action-btn {
+        padding: 0.75rem;
+    }
+
+    .action-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .transaction-item {
+        padding: 0.75rem;
+    }
+
+    .transaction-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .transaction-amount {
+        font-size: 0.9rem;
+    }
+}

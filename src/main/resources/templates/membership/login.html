@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinanceTracker - Login</title>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap 5 -->
+  <link th:href="@{/bootstrap/css/bootstrap.css}" rel="stylesheet">
+  <script th:src="@{/bootstrap/js/bootstrap.js}" rel="stylesheet"></script>
+  <!-- jQuery 3.7.1 -->
+  <script th:src="@{/js/jQuery/jquery-3.7.1.min.js}" rel="stylesheet"></script>
+  <!-- css -->
+  <link th:href="@{/css/membership/login.css}" rel="stylesheet">
+
+  <!-- global config -->
+  <th:block th:insert="~{common/common :: global-config}"></th:block>
+</head>
+<body>
+<div class="container-fluid vh-100 d-flex align-items-center">
+  <div class="login-container w-100">
+    <div class="login-card">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="brand-logo">
+          <i class="bi bi-graph-up-arrow"></i> FinanceTracker
+        </div>
+        <p class="mb-0">Secure Financial Management Service</p>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator mt-3">
+          <div class="step active" id="step-1">1</div>
+          <div class="step" id="step-2">2</div>
+          <div class="step" id="step-3">3</div>
+        </div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" novalidate>
+        <!-- Step 1: User Identification -->
+        <div class="form-step active" id="step1">
+          <h4 class="text-center mb-4">Sign In</h4>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                  <i class="bi bi-envelope"></i>
+              </span>
+              <input type="email" class="form-control" id="email" name="email"
+                     placeholder="your@email.com" required>
+            </div>
+            <div class="error-message" id="emailError"></div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary" id="nextStep1">
+              <span class="btn-text">Continue</span>
+              <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="text-center mt-3">
+            <p class="mb-0">Don't have an account? <a th:href="@{/sign-up}" class="text-decoration-none">Sign Up</a></p>
+          </div>
+        </div>
+
+        <!-- Step 2: Password Input -->
+        <div class="form-step" id="step2">
+          <h4 class="text-center mb-4">Enter Password</h4>
+
+          <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center bg-light rounded-pill px-3 py-2">
+              <i class="bi bi-person-circle me-2"></i>
+              <span id="userEmail" class="fw-medium"></span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+              <input type="password" class="form-control" id="password" name="password"
+                     placeholder="Enter your password" required>
+              <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+            <div class="error-message" id="passwordError"></div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+              Remember me
+            </label>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary" id="nextStep2">
+              <span class="btn-text">Sign In</span>
+              <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="backStep1">
+              <i class="bi bi-arrow-left me-2"></i>Back
+            </button>
+          </div>
+
+          <div class="text-center mt-3">
+            <a href="#" class="text-decoration-none">Forgot your password?</a>
+          </div>
+        </div>
+
+        <!-- Step 3: Two-Factor Authentication -->
+        <div class="form-step" id="step3">
+          <h4 class="text-center mb-4">Two-Factor Authentication</h4>
+
+          <div class="text-center mb-4">
+            <i class="bi bi-shield-check text-success" style="font-size: 3rem;"></i>
+            <p class="mt-2 text-muted">
+              Please enter the verification code for security.<br>
+              We sent a code to <span id="maskedEmail" class="fw-medium"></span>
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label text-center d-block">Verification Code (6 digits)</label>
+            <div class="d-flex justify-content-center">
+              <input type="text" class="otp-input" maxlength="1" id="otp1">
+              <input type="text" class="otp-input" maxlength="1" id="otp2">
+              <input type="text" class="otp-input" maxlength="1" id="otp3">
+              <input type="text" class="otp-input" maxlength="1" id="otp4">
+              <input type="text" class="otp-input" maxlength="1" id="otp5">
+              <input type="text" class="otp-input" maxlength="1" id="otp6">
+            </div>
+            <div class="error-message text-center" id="otpError"></div>
+            <div class="success-message text-center" id="otpSuccess"></div>
+          </div>
+
+          <div class="text-center mb-3">
+            <p class="mb-0">Didn't receive the code?</p>
+            <button type="button" class="btn btn-link p-0" id="resendCode">
+              Resend Code <span id="resendTimer"></span>
+            </button>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary" id="verifyOtp">
+              <span class="btn-text">Verify & Sign In</span>
+              <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="backStep2">
+              <i class="bi bi-arrow-left me-2"></i>Back
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Custom JavaScript -->
+<script th:src="@{/js/membership/login.js}"></script>
+</body>
+</html>

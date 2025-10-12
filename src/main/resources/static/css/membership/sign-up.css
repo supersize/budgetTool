@@ -1,0 +1,473 @@
+body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.signup-container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.signup-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+    color: white;
+    text-align: center;
+    padding: 2rem 1.5rem 1rem;
+    border: none;
+    position: relative;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #27ae60 0%, #2ecc71 50%, #27ae60 100%);
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+}
+
+.step.active {
+    background: #27ae60;
+    color: white;
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3);
+}
+
+.step.completed {
+    background: #2ecc71;
+    color: white;
+    border-color: #2ecc71;
+}
+
+.step-labels {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.step-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    flex: 1;
+    text-align: center;
+    max-width: 80px;
+}
+
+.step-label.active {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.step-label.completed {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.form-step {
+    display: none;
+    padding: 2.5rem;
+}
+
+.form-step.active {
+    display: block;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e8ecf0;
+    padding: 0.875rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    background-color: #fafbfc;
+}
+
+.form-control:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.15);
+    background-color: #ffffff;
+}
+
+.form-control:valid {
+    border-color: #27ae60;
+}
+
+.form-control.is-invalid {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.875rem 2rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(44, 62, 80, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    border-radius: 8px;
+    padding: 0.875rem 2rem;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+    border: 2px solid #e8ecf0;
+    border-right: none;
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+.input-group .form-control {
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+.input-group .form-control:focus + .btn-outline-secondary,
+.input-group .form-control:focus ~ .btn-outline-secondary {
+    border-color: #2c3e50;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+    font-weight: 500;
+}
+
+.success-message {
+    color: #27ae60;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+    font-weight: 500;
+}
+
+.loading-spinner {
+    display: none;
+}
+
+.brand-logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.brand-logo i {
+    color: #27ae60;
+    margin-right: 0.5rem;
+}
+
+.form-check-input:checked {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+}
+
+.form-check-input:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.15);
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid #e8ecf0;
+    margin: 0 4px;
+    background-color: #fafbfc;
+    transition: all 0.3s ease;
+}
+
+.otp-input:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.15);
+    background-color: #ffffff;
+}
+
+.otp-input.is-valid {
+    border-color: #27ae60;
+    background-color: #f8fff9;
+}
+
+.otp-input.is-invalid {
+    border-color: #e74c3c;
+    background-color: #fdf2f2;
+}
+
+/* 패스워드 강도 표시기 */
+.password-strength {
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e9ecef;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.password-strength .strength-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    width: 0%;
+}
+
+.password-strength.weak .strength-bar {
+    background-color: #e74c3c;
+    width: 25%;
+}
+
+.password-strength.fair .strength-bar {
+    background-color: #f39c12;
+    width: 50%;
+}
+
+.password-strength.good .strength-bar {
+    background-color: #f1c40f;
+    width: 75%;
+}
+
+.password-strength.strong .strength-bar {
+    background-color: #27ae60;
+    width: 100%;
+}
+
+/* 금융 목표 체크박스 */
+.financial-goals-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 2px solid #e8ecf0;
+}
+
+.financial-goals-container .form-check {
+    margin-bottom: 0.5rem;
+}
+
+.financial-goals-container .form-check:last-child {
+    margin-bottom: 0;
+}
+
+.financial-goals-container .form-check-input:checked {
+    background-color: #27ae60;
+    border-color: #27ae60;
+}
+
+.financial-goals-container .form-check-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* 링크 스타일링 */
+a {
+    color: #2c3e50;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #1a252f;
+    text-decoration: underline !important;
+}
+
+.btn-link {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    color: #1a252f;
+}
+
+/* 필수 필드 표시 */
+.text-danger {
+    color: #e74c3c !important;
+}
+
+/* 모달 스타일 */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+}
+
+.modal-body {
+    padding: 3rem !important;
+}
+
+/* 반응형 개선 */
+@media (max-width: 768px) {
+    .signup-container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .form-step {
+        padding: 2rem 1.5rem;
+    }
+
+    .otp-input {
+        width: 45px;
+        height: 45px;
+        margin: 0 2px;
+        font-size: 1.2rem;
+    }
+
+    .step-labels {
+        gap: 0.5rem;
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+        max-width: 70px;
+    }
+}
+
+@media (max-width: 576px) {
+    .step {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+        margin: 0 2px;
+    }
+
+    .otp-input {
+        width: 40px;
+        height: 40px;
+        margin: 0 1px;
+        font-size: 1.1rem;
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+        max-width: 60px;
+    }
+}
+
+/* 폼 라벨 강화 */
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+/* 입력 그룹 개선 */
+.input-group-text {
+    font-weight: 500;
+}
+
+/* 전문적인 그림자 효과 */
+.signup-card:hover {
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+/* 추가적인 보안 느낌을 위한 스타일 */
+.text-muted {
+    color: #6c757d !important;
+    font-size: 0.9rem;
+}
+
+/* 선택된 옵션 하이라이트 */
+select.form-control option:checked {
+    background-color: #2c3e50;
+    color: white;
+}
+
+/* 폼 검증 성공 상태 */
+.form-control.is-valid {
+    border-color: #27ae60;
+    background-color: #f8fff9;
+}
+
+.form-control.is-valid:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.15);
+}

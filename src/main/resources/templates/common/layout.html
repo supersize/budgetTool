@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title layout:title-pattern="$CONTENT_TITLE - FinanceTracker">FinanceTracker</title>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap 5 -->
+  <link th:href="@{/bootstrap/css/bootstrap.css}" rel="stylesheet">
+  <script th:src="@{/bootstrap/js/bootstrap.js}"></script>
+  <script th:src="@{/bootstrap/js/bootstrap.bundle.js}"></script>
+  <!-- jQuery 3.7.1 -->
+  <script th:src="@{/js/jQuery/jquery-3.7.1.min.js}"></script>
+
+  <!-- Common Styles -->
+  <link th:href="@{/css/common/common.css}" rel="stylesheet">
+
+  <!-- Page-specific Additional Styles -->
+  <th:block layout:fragment="styles"></th:block>
+  <th:block th:insert="~{common/common :: global-config}"></th:block>
+
+</head>
+<body>
+<!-- Header -->
+<header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <!-- Left Logo -->
+      <a class="navbar-brand" th:href="@{/dashboard}">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span>FinanceTracker</span>
+      </a>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="navbar-toggler d-lg-none" type="button" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <!-- Right Menu -->
+      <div class="navbar-nav ms-auto">
+        <!-- Notifications -->
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            <span class="notification-badge">3</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+            <li><h6 class="dropdown-header">Notifications</h6></li>
+            <li><a class="dropdown-item" href="#">
+              <div class="notification-item">
+                <i class="bi bi-credit-card text-primary"></i>
+                <div class="notification-content">
+                  <div class="notification-title">Deposit Completed</div>
+                  <div class="notification-text">£5,000 has been deposited.</div>
+                  <div class="notification-time">5 minutes ago</div>
+                </div>
+              </div>
+            </a></li>
+            <li><a class="dropdown-item" href="#">
+              <div class="notification-item">
+                <i class="bi bi-arrow-right-circle text-success"></i>
+                <div class="notification-content">
+                  <div class="notification-title">Transfer Completed</div>
+                  <div class="notification-text">£1,000 sent to John Smith</div>
+                  <div class="notification-time">1 hour ago</div>
+                </div>
+              </div>
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-center" href="#">View All Notifications</a></li>
+          </ul>
+        </div>
+
+        <!-- User Menu -->
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle user-menu" href="#" id="userDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-avatar">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <span class="user-name" th:text="${session.user?.name} ?: 'User'">John Doe</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+            <li><h6 class="dropdown-header" th:text="${session.user?.email} ?: 'user@example.com'">user@example.com</h6></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" th:href="@{/profile}">
+              <i class="bi bi-person me-2"></i>My Profile
+            </a></li>
+            <li><a class="dropdown-item" href="#">
+              <i class="bi bi-gear me-2"></i>Settings
+            </a></li>
+            <li><a class="dropdown-item" href="#">
+              <i class="bi bi-question-circle me-2"></i>Help
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">
+              <i class="bi bi-box-arrow-right me-2"></i>Logout
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="main-container">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+      <!-- Account Information -->
+      <div class="account-info">
+        <div class="account-avatar">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="account-details">
+          <div class="account-name" th:text="${session.user?.name} ?: 'John Doe'">John Doe</div>
+          <div class="account-email" th:text="${session.user?.email} ?: 'user@example.com'">user@example.com</div>
+        </div>
+      </div>
+
+      <hr class="sidebar-divider">
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/dashboard}" th:classappend="${currentPath == '/dashboard'} ? 'active'">
+              <i class="bi bi-house-door"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/accounts}" th:classappend="${#strings.startsWith(currentPath, '/accounts')} ? 'active'">
+              <i class="bi bi-credit-card"></i>
+              <span>Accounts</span>
+            </a>
+          </li>
+
+          <!-- Transaction Menu -->
+          <li class="nav-item">
+            <div class="nav-section-title">Transactions</div>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#depositModal">
+              <i class="bi bi-plus-circle"></i>
+              <span>Deposit</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+              <i class="bi bi-dash-circle"></i>
+              <span>Withdraw</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#transferModal">
+              <i class="bi bi-arrow-right-circle"></i>
+              <span>Transfer</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/transactions}" th:classappend="${#strings.startsWith(currentPath, '/transactions')} ? 'active'">
+              <i class="bi bi-list-ul"></i>
+              <span>Transaction History</span>
+            </a>
+          </li>
+
+          <!-- Other Menu -->
+          <li class="nav-item mt-auto">
+            <div class="nav-section-title">Other</div>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/reports}">
+              <i class="bi bi-bar-chart"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/settings}">
+              <i class="bi bi-gear"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <!-- Page Header -->
+      <div class="page-header" layout:fragment="page-header">
+        <h1 layout:fragment="page-title">Page Title</h1>
+        <div class="page-actions" layout:fragment="page-actions"></div>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content" layout:fragment="content">
+        <!-- Page-specific content will be inserted here -->
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modals -->
+<!-- Deposit Modal -->
+<div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="depositModalLabel">
+          <i class="bi bi-plus-circle me-2"></i>Deposit
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="depositForm">
+          <div class="mb-3">
+            <label for="depositAccount" class="form-label">Deposit Account</label>
+            <select class="form-select" id="depositAccount" required>
+              <option value="">Select an account</option>
+              <option value="1">DBS Bank ***1234 (£15,000)</option>
+              <option value="2">OCBC Bank ***5678 (S$25,000)</option>
+              <option value="3">Barclays ***9012 (£8,500)</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="depositAmount" class="form-label">Deposit Amount</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="depositAmount" placeholder="0" required>
+              <select class="form-select" style="max-width: 80px;">
+                <option value="GBP">£</option>
+                <option value="SGD">S$</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="depositMemo" class="form-label">Memo (Optional)</label>
+            <input type="text" class="form-control" id="depositMemo" placeholder="Enter deposit details">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmDeposit">Deposit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="withdrawModalLabel">
+          <i class="bi bi-dash-circle me-2"></i>Withdraw
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="withdrawForm">
+          <div class="mb-3">
+            <label for="withdrawAccount" class="form-label">Withdraw Account</label>
+            <select class="form-select" id="withdrawAccount" required>
+              <option value="">Select an account</option>
+              <option value="1">DBS Bank ***1234 (£15,000)</option>
+              <option value="2">OCBC Bank ***5678 (S$25,000)</option>
+              <option value="3">Barclays ***9012 (£8,500)</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="withdrawAmount" class="form-label">Withdraw Amount</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="withdrawAmount" placeholder="0" required>
+              <select class="form-select" style="max-width: 80px;">
+                <option value="GBP">£</option>
+                <option value="SGD">S$</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="withdrawMemo" class="form-label">Memo (Optional)</label>
+            <input type="text" class="form-control" id="withdrawMemo" placeholder="Enter withdrawal details">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmWithdraw">Withdraw</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Modal -->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="transferModalLabel">
+          <i class="bi bi-arrow-right-circle me-2"></i>Transfer
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="transferForm">
+          <div class="mb-3">
+            <label for="transferFromAccount" class="form-label">From Account</label>
+            <select class="form-select" id="transferFromAccount" required>
+              <option value="">Select an account</option>
+              <option value="1">DBS Bank ***1234 (£15,000)</option>
+              <option value="2">OCBC Bank ***5678 (S$25,000)</option>
+              <option value="3">Barclays ***9012 (£8,500)</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="transferToAccount" class="form-label">To Account Number</label>
+            <input type="text" class="form-control" id="transferToAccount" placeholder="Enter account number" required>
+          </div>
+          <div class="mb-3">
+            <label for="transferToName" class="form-label">Recipient Name</label>
+            <input type="text" class="form-control" id="transferToName" placeholder="Enter recipient name" required>
+          </div>
+          <div class="mb-3">
+            <label for="transferAmount" class="form-label">Transfer Amount</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="transferAmount" placeholder="0" required>
+              <select class="form-select" style="max-width: 80px;">
+                <option value="GBP">£</option>
+                <option value="SGD">S$</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="transferMemo" class="form-label">Transfer Message (Optional)</label>
+            <input type="text" class="form-control" id="transferMemo" placeholder="Enter transfer message">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" id="confirmTransfer">Transfer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Common JavaScript -->
+<script th:src="@{/js/common/common.js}"></script>
+
+<!-- Page-specific Additional Scripts -->
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinanceTracker - Sign Up</title>
+  <meta name="description" content="Join FinanceTracker for secure personal finance management">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap 5 -->
+  <link th:href="@{/bootstrap/css/bootstrap.css}" rel="stylesheet">
+  <script th:src="@{/bootstrap/js/bootstrap.js}"></script>
+  <!-- jQuery 3.7.1 -->
+  <script th:src="@{/js/jQuery/jquery-3.7.1.min.js}"></script>
+  <!-- css -->
+  <link th:href="@{/css/membership/sign-up.css}" rel="stylesheet">
+</head>
+<body>
+  <div class="container-fluid vh-100 d-flex align-items-center">
+    <div class="signup-container w-100">
+      <div class="signup-card">
+        <!-- Header -->
+        <div class="card-header">
+          <div class="brand-logo">
+            <i class="bi bi-graph-up-arrow"></i> FinanceTracker
+          </div>
+          <p class="mb-0">Start Your Financial Journey</p>
+
+          <!-- Step Indicator -->
+          <div class="step-indicator mt-3" role="progressbar" aria-label="Registration progress">
+            <div class="step active" id="step-1" aria-current="step">1</div>
+            <div class="step" id="step-2">2</div>
+            <div class="step" id="step-3">3</div>
+            <div class="step" id="step-4">4</div>
+          </div>
+
+          <!-- Progress Labels -->
+          <div class="step-labels mt-2">
+            <small class="step-label active" id="label-1">Basic Info</small>
+            <small class="step-label" id="label-2">Security</small>
+            <small class="step-label" id="label-3">Profile</small>
+            <small class="step-label" id="label-4">Verify</small>
+          </div>
+        </div>
+
+        <!-- Registration Form -->
+        <form id="signupForm" novalidate>
+          <!-- Step 1: Basic Information -->
+          <div class="form-step active" id="step1">
+            <h4 class="text-center mb-4">Basic Information</h4>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input type="text" class="form-control" id="firstName" name="firstName"
+                         placeholder="John" required>
+                </div>
+                <div class="error-message" id="firstNameError"></div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <input type="text" class="form-control" id="lastName" name="lastName"
+                         placeholder="Doe" required>
+                </div>
+                <div class="error-message" id="lastNameError"></div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" class="form-control" id="email" name="email"
+                       placeholder="john.doe@example.com" required>
+              </div>
+              <div class="error-message" id="emailError"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="dateOfBirth" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-calendar"></i>
+                </span>
+                <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" required>
+              </div>
+              <div class="error-message" id="dateOfBirthError"></div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-primary" id="nextStep1">
+                <span class="btn-text">Continue</span>
+                <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="text-center mt-3">
+              <p class="mb-0">Already have an account? <a th:href="@{/login}" class="text-decoration-none">Log In</a></p>
+            </div>
+          </div>
+
+          <!-- Step 2: Security Settings -->
+          <div class="form-step" id="step2">
+            <h4 class="text-center mb-4">Security Settings</h4>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" class="form-control" id="password" name="password"
+                       placeholder="Create a strong password" required>
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="password-strength mt-2" id="passwordStrength"></div>
+              <div class="error-message" id="passwordError"></div>
+              <small class="text-muted">At least 8 characters with uppercase, lowercase, and numbers</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-lock-fill"></i>
+                </span>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                       placeholder="Confirm your password" required>
+                <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-primary" id="nextStep2">
+                <span class="btn-text">Continue</span>
+                <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="backStep1">
+                <i class="bi bi-arrow-left me-2"></i>Back
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Profile Information -->
+          <div class="form-step" id="step3">
+            <h4 class="text-center mb-4">Profile Information</h4>
+
+            <div class="mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-telephone"></i>
+                </span>
+                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                       placeholder="010-1234-5678" required>
+              </div>
+              <div class="error-message" id="phoneNumberError"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="occupation" class="form-label">Occupation <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-briefcase"></i>
+                </span>
+                <select class="form-control" id="occupation" name="occupation" required>
+                  <option value="">Select your occupation</option>
+                  <option value="employee">Employee</option>
+                  <option value="selfemployed">Self-Employed</option>
+                  <option value="student">Student</option>
+                  <option value="unemployed">Unemployed</option>
+                  <option value="retired">Retired</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="error-message" id="occupationError"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="incomeRange" class="form-label">Annual Income Range (Optional)</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-currency-dollar"></i>
+                </span>
+                <select class="form-control" id="incomeRange" name="incomeRange">
+                  <option value="">Prefer not to say</option>
+                  <option value="under20">Under $20,000</option>
+                  <option value="20to40">$20,000 - $40,000</option>
+                  <option value="40to60">$40,000 - $60,000</option>
+                  <option value="60to80">$60,000 - $80,000</option>
+                  <option value="80to100">$80,000 - $100,000</option>
+                  <option value="over100">Over $100,000</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="financialGoals" class="form-label">Primary Financial Goals</label>
+              <div class="financial-goals-container">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="budgeting" id="goal1" name="financialGoals">
+                  <label class="form-check-label" for="goal1">Budget Management</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="saving" id="goal2" name="financialGoals">
+                  <label class="form-check-label" for="goal2">Saving Money</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="investment" id="goal3" name="financialGoals">
+                  <label class="form-check-label" for="goal3">Investment Planning</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="debt" id="goal4" name="financialGoals">
+                  <label class="form-check-label" for="goal4">Debt Management</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-primary" id="nextStep3">
+                <span class="btn-text">Continue</span>
+                <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="backStep2">
+                <i class="bi bi-arrow-left me-2"></i>Back
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Email Verification -->
+          <div class="form-step" id="step4">
+            <h4 class="text-center mb-4">Email Verification</h4>
+
+            <div class="text-center mb-4">
+              <i class="bi bi-envelope-check text-success" style="font-size: 3rem;"></i>
+              <p class="mt-2 text-muted">
+                We've sent a verification code to<br>
+                <span id="maskedEmail" class="fw-medium"></span>
+              </p>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-center d-block">Verification Code (6 digits)</label>
+              <div class="d-flex justify-content-center">
+                <input type="text" class="otp-input" maxlength="1" id="otp1">
+                <input type="text" class="otp-input" maxlength="1" id="otp2">
+                <input type="text" class="otp-input" maxlength="1" id="otp3">
+                <input type="text" class="otp-input" maxlength="1" id="otp4">
+                <input type="text" class="otp-input" maxlength="1" id="otp5">
+                <input type="text" class="otp-input" maxlength="1" id="otp6">
+              </div>
+              <div class="error-message text-center" id="otpError"></div>
+              <div class="success-message text-center" id="otpSuccess"></div>
+            </div>
+
+            <div class="text-center mb-3">
+              <p class="mb-0">Didn't receive the code?</p>
+              <button type="button" class="btn btn-link p-0" id="resendCode">
+                Resend Code <span id="resendTimer"></span>
+              </button>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                <label class="form-check-label" for="agreeTerms">
+                  I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and
+                  <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </label>
+              </div>
+              <div class="error-message" id="agreeTermsError"></div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary" id="completeSignup">
+                <span class="btn-text">Create Account</span>
+                <div class="loading-spinner spinner-border spinner-border-sm ms-2" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="backStep3">
+                <i class="bi bi-arrow-left me-2"></i>Back
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center p-4">
+          <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+          <h4 class="mt-3 mb-2">Welcome to FinanceTracker!</h4>
+          <p class="text-muted mb-4">Your account has been created successfully.</p>
+          <button type="button" class="btn btn-primary" onclick="window.location.href='/login'">
+            Go to Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sr-only" aria-live="polite" id="step-announcement"></div>
+
+<!-- Custom JavaScript -->
+<script th:src="@{/js/membership/sign-up.js}"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+
+
+bank project
+
+user -> input money account
+
+tranaction
+    user -> transfer money
+    user -> withdwral money
+
+sign in
+id/pw -> id exits / pw matched -> sign-in
+
+
+
+
+thing needed to get a job in singapore
+    1~3 project
+        must have skills
+        1) authentication
+        2) websocket
+        3) profile management
+        4) deployment
+
+        (other functions you should add )
+        4) comment, notification, likes, categories
+
+        *6) try to tie your project to domain you are interested in.
+            phillips says making a budgeting tool showing spending trends
+            financial app 에서 domain issue가 뭐가 있을까?
+                    참고 : https://docs.google.com/document/d/1O0tpCc8WeM21PCXYKwjP9L-2pEe14stfYFotmvysCgI/edit?tab=t.0
+                    pillips' video  : https://www.youtube.com/watch?v=tr4saJGic4o
+
+readme에 문제 상황, 어케 해결했는지 적기
+
+Reason I've quited
+Former company is limited to grow up. their project are basically maintaining old projects. they are still using java7
+and copy and paste codes. no documentation
+
+Good advice
+Dont be just an applicant, Be a marketer. Think about how recruiter thinks you are profitable and useful to a company.
+
+
+성과( action and result) 참고 : https://www.youtube.com/watch?v=jouEEK3sihY
+1. 반복되던 코드 모듈화 -> 코드 작성 시간 20% 감소
+2. 파라미터만 다른 동일 쿼리 반복 -> 동적 쿼리 제작 코드량 50% 감소

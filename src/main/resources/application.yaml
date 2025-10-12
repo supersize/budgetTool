@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: budgetTool
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/test01
+    username: postgres
+    password: 6477
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp
+
+
+
+server:
+  port: 8080
+  servlet:
+    context-path: /budgetTool
+    encoding:
+      charset: utf-8
+      enabled: true
+

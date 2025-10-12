@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <title>대시보드</title>
+    <th:block layout:fragment="styles">
+        <link th:href="@{/css/dashboard/dashboard.css}" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+<!-- Page Header -->
+<div layout:fragment="page-header" class="page-header">
+    <h1 layout:fragment="page-title">
+        <i class="bi bi-house-door"></i>
+        Dashboard
+    </h1>
+    <div layout:fragment="page-actions" class="page-actions">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
+            <i class="bi bi-arrow-right-circle me-2"></i>Quick Transfer
+        </button>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div layout:fragment="content" class="dashboard-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-card">
+            <div class="welcome-content">
+                <h2>Hello, <span th:text="${session.user?.name} ?: 'John Doe'">John Doe</span>!</h2>
+                <p>Start your smart financial management journey with FinanceTracker today.</p>
+                <div class="welcome-stats">
+                    <div class="stat-item">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Total Accounts: <strong>3</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="bi bi-graph-up"></i>
+                        <span>This Month's Growth: <strong>+2.3%</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-illustration">
+                <i class="bi bi-bank"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Summary -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card account-summary-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-credit-card me-2"></i>Account Overview
+                    </h5>
+                    <a th:href="@{/accounts}" class="btn btn-outline-primary btn-sm">
+                        View All <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Total Balance -->
+                        <div class="col-md-4">
+                            <div class="balance-summary">
+                                <div class="balance-label">Total Balance</div>
+                                <div class="balance-amount text-primary">£23,500</div>
+                                <div class="balance-change text-success">
+                                    <i class="bi bi-arrow-up"></i> +£1,500 (this month)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Breakdown -->
+                        <div class="col-md-8">
+                            <div class="accounts-grid">
+                                <div class="account-item">
+                                    <div class="account-info">
+                                        <div class="account-bank">DBS Bank</div>
+                                        <div class="account-number">***1234</div>
+                                        <div class="account-balance">£15,000</div>
+                                    </div>
+                                    <div class="account-chart">
+                                        <div class="chart-bar" style="height: 70%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="account-item">
+                                    <div class="account-info">
+                                        <div class="account-bank">Barclays</div>
+                                        <div class="account-number">***5678</div>
+                                        <div class="account-balance">£8,500</div>
+                                    </div>
+                                    <div class="account-chart">
+                                        <div class="chart-bar" style="height: 40%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions and Recent Transactions -->
+    <div class="row">
+        <!-- Quick Actions -->
+        <div class="col-lg-4 mb-4">
+            <div class="card quick-actions-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning-charge me-2"></i>Quick Transactions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" data-bs-toggle="modal" data-bs-target="#depositModal">
+                            <div class="action-icon bg-success">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">Deposit</div>
+                                <div class="action-description">Add money to account</div>
+                            </div>
+                        </button>
+
+                        <button class="quick-action-btn" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                            <div class="action-icon bg-danger">
+                                <i class="bi bi-dash-circle"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">Withdraw</div>
+                                <div class="action-description">Withdraw money from account</div>
+                            </div>
+                        </button>
+
+                        <button class="quick-action-btn" data-bs-toggle="modal" data-bs-target="#transferModal">
+                            <div class="action-icon bg-primary">
+                                <i class="bi bi-arrow-right-circle"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">Transfer</div>
+                                <div class="action-description">Send money to another account</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="col-lg-8 mb-4">
+            <div class="card recent-transactions-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Recent Transactions
+                    </h5>
+                    <a th:href="@{/transactions}" class="btn btn-outline-primary btn-sm">
+                        View All <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="transactions-list">
+                        <div class="transaction-item">
+                            <div class="transaction-icon bg-success">
+                                <i class="bi bi-arrow-down-left"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Salary Deposit</div>
+                                <div class="transaction-account">DBS Bank ***1234</div>
+                                <div class="transaction-time">2024-01-15 09:30</div>
+                            </div>
+                            <div class="transaction-amount text-success">
+                                +£5,000
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon bg-primary">
+                                <i class="bi bi-arrow-right"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Transfer to Sarah Wilson</div>
+                                <div class="transaction-account">Barclays ***5678</div>
+                                <div class="transaction-time">2024-01-14 14:20</div>
+                            </div>
+                            <div class="transaction-amount text-danger">
+                                -£200
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon bg-warning">
+                                <i class="bi bi-credit-card"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Online Shopping</div>
+                                <div class="transaction-account">DBS Bank ***1234</div>
+                                <div class="transaction-time">2024-01-13 16:45</div>
+                            </div>
+                            <div class="transaction-amount text-danger">
+                                -£85
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon bg-info">
+                                <i class="bi bi-piggy-bank"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Savings Transfer</div>
+                                <div class="transaction-account">OCBC Bank ***9012</div>
+                                <div class="transaction-time">2024-01-13 10:00</div>
+                            </div>
+                            <div class="transaction-amount text-danger">
+                                -S$500
+                            </div>
+                        </div>
+
+                        <div class="transaction-item">
+                            <div class="transaction-icon bg-success">
+                                <i class="bi bi-arrow-down-left"></i>
+                            </div>
+                            <div class="transaction-details">
+                                <div class="transaction-title">Interest Credit</div>
+                                <div class="transaction-account">Barclays ***5678</div>
+                                <div class="transaction-time">2024-01-12 00:05</div>
+                            </div>
+                            <div class="transaction-amount text-success">
+                                +£15
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Spending Analysis and Goals -->
+    <div class="row">
+        <!-- Monthly Spending Analysis -->
+        <div class="col-lg-8 mb-4">
+            <div class="card spending-analysis-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart-line me-2"></i>This Month's Spending Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="spending-summary">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="spending-stat">
+                                    <div class="stat-value text-danger">£1,250</div>
+                                    <div class="stat-label">Total Spent</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="spending-stat">
+                                    <div class="stat-value text-primary">£1,500</div>
+                                    <div class="stat-label">Budget</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="spending-stat">
+                                    <div class="stat-value text-success">£250</div>
+                                    <div class="stat-label">Remaining</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="spending-stat">
+                                    <div class="stat-value text-info">83%</div>
+                                    <div class="stat-label">Budget Used</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Progress -->
+                        <div class="budget-progress">
+                            <div class="progress-label">Budget Usage</div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 83%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings Goals -->
+        <div class="col-lg-4 mb-4">
+            <div class="card savings-goal-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-target me-2"></i>Savings Goals
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <div class="goal-title">Emergency Fund</div>
+                            <div class="goal-amount">£10,000 target</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 47%"></div>
+                            </div>
+                            <div class="progress-text">
+                                £4,700 / £10,000 (47%)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-item">
+                        <div class="goal-info">
+                            <div class="goal-title">Holiday Fund</div>
+                            <div class="goal-amount">£3,000 target</div>
+                        </div>
+                        <div class="goal-progress">
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 25%"></div>
+                            </div>
+                            <div class="progress-text">
+                                £750 / £3,000 (25%)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goal-actions">
+                        <button class="btn btn-success btn-sm w-100">
+                            <i class="bi bi-plus me-2"></i>Add New Goal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 페이지별 스크립트 -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/board/dashboard.js}"></script>
+</th:block>
+</body>
+</html>
