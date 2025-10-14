@@ -510,6 +510,21 @@ $(document).ready(function() {
 
     // Spring Boot 백엔드와 연동할 AJAX 함수들
     function checkEmailAvailability(email) {
+        fetch(ctxPath + "Auth/isEmailInUse", {
+            method: "post"
+            , headers: {
+                'Content-Type': 'application/json',
+            }
+            , body: JSON.stringify({
+                inputEmail: email
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("yoyoyo")
+            })
+
+        return false;
         return new Promise((resolve, reject) => {
             // 실제 구현시 AJAX 호출
             setTimeout(() => {

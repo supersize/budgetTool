@@ -42,7 +42,7 @@ $(document).ready(function() {
             // 로그인 성공시 2FA 단계로
             const email = $('#email').val();
             $('#maskedEmail').text(maskEmail(email));
-            goToStep(3);
+            // goToStep(3);
             startResendTimer();
         }, 1500);
     });
