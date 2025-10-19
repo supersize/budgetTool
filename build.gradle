@@ -51,6 +51,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // queryDsl
 //    implementation "com.querydsl:querydsl-jpa:5.0.0"  // QueryDSL JPA 의존성

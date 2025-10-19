@@ -3,6 +3,7 @@ package com.example.budgetTool.controller.rest;
 import com.example.budgetTool.model.dto.ApiResponse;
 import com.example.budgetTool.model.dto.UserDto;
 import com.example.budgetTool.model.entity.User;
+import com.example.budgetTool.service.UserService;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/Auth")
 public class AuthRestController {
 
+    private final UserService userService;
+
     /**
      * methodName : isEmailInUse
      * author : Jae-Hyeong Kim
@@ -28,18 +31,15 @@ public class AuthRestController {
      */
     @GetMapping("/isEmailInUse")
 //    public ApiResponse isEmailInUse (@RequestParam String inputEmail) {
-    public ApiResponse isEmailInUse (@RequestParam(required = false) String inputEmail) {
+    public ApiResponse<String> isEmailInUse (@RequestParam(required = false) String inputEmail) {
 
-        ApiResponse<Test01> res = new ApiResponse<>();
+        ApiResponse<String> res = new ApiResponse<>();
         try {
-        Test01 test = new Test01();
-        test.setSentence("test");
-        res = ApiResponse.SUCCESS(test);
-
-
-//            this.userService.
+            String randomDigits = ((int)(Math.random() * 10000)) + "";
+            this.userService.sendEmail(inputEmail, "budgetTool verification", randomDigits);
+            res = ApiResponse.SUCCESS(randomDigits);
         } catch (Exception e) {
-            log.error("error occurs when findding email exists : {}", e);
+            log.error("An error occurs when findding email exists : {}", e);
             res = ApiResponse.ERROR(e.getMessage());
         }
 
