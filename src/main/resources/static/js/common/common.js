@@ -236,7 +236,16 @@ function formatCurrency(amount) {
 }
 
 function logout() {
-    showAlert('로그아웃 중입니다...', 'info', 2000);
+    showAlert('signing out...', 'info', 2000);
+    fetch(ctxPath + "logout")
+        .then(response => response.json())
+        .then(data => {
+            console.log("here is logout.")
+            console.log(data)
+
+            location.href = ctxPath + 'login'
+        })
+        .catch(error => console.error('logout failed. : ', error))
 
     // 실제 구현시 사용할 코드
     /*
@@ -255,11 +264,6 @@ function logout() {
         }
     });
     */
-
-    // 임시 처리
-    setTimeout(() => {
-        window.location.href = '/login';
-    }, 2000);
 }
 
 // AJAX 에러 핸들러

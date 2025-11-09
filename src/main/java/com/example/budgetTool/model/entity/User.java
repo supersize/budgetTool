@@ -69,6 +69,9 @@ public class User {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
+    @Column(name = "salt", nullable = false)
+    private String salt;
+
     private User(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth) {
         this.email = email;
         this.passwordHash = passwordHash;

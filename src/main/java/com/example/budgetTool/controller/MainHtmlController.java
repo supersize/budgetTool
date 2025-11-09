@@ -26,10 +26,16 @@ public class MainHtmlController {
         return "/membership/sign-up";
     }
 
-    @GetMapping("/dashboard")
-    public String goTodashboard (HttpServletRequest request, HttpServletResponse response, Model model) {
+    @GetMapping("/main")
+    public String goToDashboard (HttpServletRequest request, HttpServletResponse response, Model model) {
         model.addAttribute("currentPath", request.getServletPath());
 
         return "board/dashboard";
     }
+
+    @GetMapping("/")
+    public String goToMainPage (HttpServletRequest request, HttpServletResponse response, Model model) {
+        return "redirect:/main";
+    }
+
 }

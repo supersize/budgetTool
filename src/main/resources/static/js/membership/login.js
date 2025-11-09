@@ -14,11 +14,19 @@ $(document).ready(function() {
 
         showLoading($(this));
 
+        const isEmailUsedURL = ctxPath + "Auth/isEmailInUse"
         // 서버에 이메일 확인 요청 (실제 구현시 AJAX 호출)
-        fetch(ctxPath + "Auth/isEmailInUse")
+        fetch(`${isEmailUsedURL}?inputEmail=${encodeURIComponent(email)}`)
             .then(response => response.json())
             .then(data => {
                 $('#userEmail').text(email);
+                const isEmailUsed = data.data
+
+                if (!isEmailUsed) {
+                    alert("This Email is not in used. Please check it again.")
+                    return false;
+                }
+
                 goToStep(2);
             })
             .catch(error => console.error('email cannot be found ', error))
@@ -27,6 +35,7 @@ $(document).ready(function() {
 
     // Step 2: 비밀번호 입력 및 다음 단계
     $('#nextStep2').click(function() {
+        const email = $('#email').val();
         const password = $('#password').val();
 
         if (!validatePassword(password)) {
@@ -35,16 +44,34 @@ $(document).ready(function() {
 
         showLoading($(this));
 
-        // 서버에 로그인 요청 (실제 구현시 AJAX 호출)
-        setTimeout(() => {
+        fetch(ctxPath + "Auth/login", {
+            method: 'post'
+            , headers: { 'Content-Type' : 'application/json'}
+            , body: JSON.stringify({
+                email: email
+                , passwordHash : password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#userEmail').text(email);
             hideLoading($(this));
+            !data.success ? alert(data.message) : location.href=ctxPath
+        })
+        .catch(error => console.error('email cannot be found ', error))
+        .finally(() => hideLoading($(this)))
 
-            // 로그인 성공시 2FA 단계로
-            const email = $('#email').val();
-            $('#maskedEmail').text(maskEmail(email));
-            // goToStep(3);
-            startResendTimer();
-        }, 1500);
+
+        // 서버에 로그인 요청 (실제 구현시 AJAX 호출)
+        // setTimeout(() => {
+        //     hideLoading($(this));
+        //
+        //     // 로그인 성공시 2FA 단계로
+        //     const email = $('#email').val();
+        //     $('#maskedEmail').text(maskEmail(email));
+        //     // goToStep(3);
+        //     startResendTimer();
+        // }, 1500);
     });
 
     // Step 3: OTP 인증
@@ -315,8 +342,11 @@ $(document).ready(function() {
     }
 
     function loginUser(email, password, rememberMe) {
+
+
+
         return $.ajax({
-            url: '/api/auth/login',
+            url: '/Auth/login',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({

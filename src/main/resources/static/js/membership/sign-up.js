@@ -29,9 +29,10 @@ $(document).ready(function() {
                     hideLoading($(this));
                     goToStep(2);
                 })
-                .catch((error) => {
+                .catch((errorMsg) => {
+                    console.log(errorMsg)
                     hideLoading($(this));
-                    showError('emailError', error.message || 'Email is already registered.');
+                    showError('emailError', errorMsg || 'Email is already registered.');
                 });
         }
     });
@@ -510,45 +511,61 @@ $(document).ready(function() {
 
     // Spring Boot 백엔드와 연동할 AJAX 함수들
     function checkEmailAvailability(email) {
-        fetch(ctxPath + "Auth/isEmailInUse", {
-            method: "post"
-            , headers: {
-                'Content-Type': 'application/json',
-            }
-            , body: JSON.stringify({
-                inputEmail: email
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                alert("yoyoyo")
-            })
+        const params = new URLSearchParams();
+        params.append("inputEmail", email);
 
-        return false;
         return new Promise((resolve, reject) => {
-            // 실제 구현시 AJAX 호출
-            setTimeout(() => {
-                // 임시로 일부 이메일을 중복으로 처리
-                if (email === 'test@example.com') {
-                    reject(new Error('This email is already registered.'));
-                } else {
-                    resolve();
-                }
-            }, 1000);
+            fetch(ctxPath + "Auth/isEmailInUse", {
+                method: "post"
+                , body: params
+            })
+                .then(response => {
+                    if (!response.ok)
+                        throw new Error("HTTP error or another error occurs while checking if email is in use.")
+                    return response.json();
+                })
+                .then(isEmailInUse => {
+                    console.log(isEmailInUse)
+                    if (!isEmailInUse.success) {
+                        throw new Error(isEmailInUse.message)
+                        return reject(isEmailInUse)
+                    }
 
-            /* 실제 구현시 사용할 코드
-            $.ajax({
-                url: '/api/auth/check-email',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ email: email }),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    [csrfHeader]: csrfToken
-                }
-            }).done(resolve).fail(reject);
-            */
-        });
+                    if (isEmailInUse.data)
+                        return reject(null)
+
+                    resolve(isEmailInUse)
+                })
+                .catch(error => {
+                    reject(error.message)
+                })
+        })
+
+
+        // return new Promise((resolve, reject) => {
+        //     // 실제 구현시 AJAX 호출
+        //     setTimeout(() => {
+        //         // 임시로 일부 이메일을 중복으로 처리
+        //         if (email === 'test@example.com') {
+        //             reject(new Error('This email is already registered.'));
+        //         } else {
+        //             resolve();
+        //         }
+        //     }, 1000);
+        //
+        //     /* 실제 구현시 사용할 코드
+        //     $.ajax({
+        //         url: '/api/auth/check-email',
+        //         method: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify({ email: email }),
+        //         headers: {
+        //             'X-Requested-With': 'XMLHttpRequest',
+        //             [csrfHeader]: csrfToken
+        //         }
+        //     }).done(resolve).fail(reject);
+        //     */
+        // });
     }
 
     function sendVerificationEmail(userData) {
@@ -592,6 +609,8 @@ $(document).ready(function() {
                 }
             }).done(resolve).fail(reject);
             */
+
+            fetch()
         });
     }
 
