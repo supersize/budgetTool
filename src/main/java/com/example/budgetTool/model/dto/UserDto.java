@@ -16,12 +16,13 @@ public record UserDto(
         String phoneNumber,
         LocalDate dateOfBirth,
         Boolean emailVerified,
-        String tempCode,
-        TempCodeType tempCodeType,
-        LocalDateTime tempCodeExpires,
+        String occupation,
+        String incomeRange,
+        String financialGoals,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         Boolean isActive
+        , String otp
 ) {
 
     @Builder
@@ -36,12 +37,10 @@ public record UserDto(
                 .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .emailVerified(user.getEmailVerified())
-                .tempCode(user.getTempCode())
-                .tempCodeType(user.getTempCodeType())
-                .tempCodeExpires(user.getTempCodeExpires())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .isActive(user.getIsActive())
+                .otp(user.getOtp())
                 .build();
     }
 
@@ -52,9 +51,10 @@ public record UserDto(
             String lastName,
             String phoneNumber,
             LocalDate dateOfBirth
+            , String otp
     ) {
         public User toEntity(String passwordHash) {
-            return User.of(email, passwordHash, firstName, lastName, dateOfBirth);
+            return User.of(email, passwordHash, firstName, lastName, dateOfBirth, otp);
         }
     }
 
@@ -69,6 +69,7 @@ public record UserDto(
             Boolean emailVerified,
             Boolean isActive,
             LocalDateTime createdAt
+            , String otp
     ) {
         public static Response from(UserDto dto) {
             return new Response(
@@ -82,6 +83,7 @@ public record UserDto(
                     dto.emailVerified(),
                     dto.isActive(),
                     dto.createdAt()
+                    , dto.otp()
             );
         }
     }

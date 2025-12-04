@@ -78,17 +78,16 @@ $(document).ready(function() {
         if (validateStep4()) {
             showLoading($(this));
 
-            const otp = getOtpValue();
+            // const otp = getOtpValue();
             const userData = collectUserData();
 
-            completeRegistration(userData, otp)
+            completeRegistration(userData)
+            // completeRegistration(userData, otp)
                 .then(() => {
                     hideLoading($(this));
                     showOtpSuccess('Account created successfully!');
 
-                    setTimeout(() => {
-                        $('#successModal').modal('show');
-                    }, 1000);
+                    $('#successModal').modal('show');
                 })
                 .catch((error) => {
                     hideLoading($(this));
@@ -186,7 +185,8 @@ $(document).ready(function() {
 
         const userData = collectUserData();
 
-        resendVerificationEmail(userData)
+        sendVerificationEmail(userData)
+        // resendVerificationEmail(userData)
             .then(() => {
                 showOtpSuccess('Verification code has been resent.');
                 startResendTimer();
@@ -428,11 +428,12 @@ $(document).ready(function() {
             lastName: $('#lastName').val().trim(),
             email: $('#email').val().trim(),
             dateOfBirth: $('#dateOfBirth').val(),
-            password: $('#password').val(),
+            passwordHash: $('#password').val(),
             phoneNumber: $('#phoneNumber').val(),
             occupation: $('#occupation').val(),
             incomeRange: $('#incomeRange').val(),
-            financialGoals: financialGoals
+            financialGoals: financialGoals,
+            otp: getOtpValue()
         };
     }
 
@@ -511,21 +512,15 @@ $(document).ready(function() {
 
     // Spring Boot 백엔드와 연동할 AJAX 함수들
     function checkEmailAvailability(email) {
-        const params = new URLSearchParams();
-        params.append("inputEmail", email);
-
         return new Promise((resolve, reject) => {
-            fetch(ctxPath + "Auth/isEmailInUse", {
-                method: "post"
-                , body: params
-            })
+            const isEmailUsedURL = ctxPath + "Auth/isEmailInUse"
+            fetch(`${isEmailUsedURL}?inputEmail=${encodeURIComponent(email)}`)
                 .then(response => {
                     if (!response.ok)
                         throw new Error("HTTP error or another error occurs while checking if email is in use.")
                     return response.json();
                 })
                 .then(isEmailInUse => {
-                    console.log(isEmailInUse)
                     if (!isEmailInUse.success) {
                         throw new Error(isEmailInUse.message)
                         return reject(isEmailInUse)
@@ -575,68 +570,79 @@ $(document).ready(function() {
                 resolve();
             }, 1500);
 
-            /* 실제 구현시 사용할 코드
-            $.ajax({
-                url: '/api/auth/send-verification',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(userData),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    [csrfHeader]: csrfToken
+            const data = new URLSearchParams();
+            data.append("email", userData.email)
+
+            fetch(ctxPath + "Auth/send-verification", {
+                method: 'post'
+                , headers: { 'Content-Type' : 'application/x-www-form-urlencoded'}
+                , body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message)
+                    return reject(data)
                 }
-            }).done(resolve).fail(reject);
-            */
+
+                return resolve();
+            })
+            .catch(error => console.error('Sending verification is failed : ', error))
+            // .finally(() => hideLoading($(this)))
         });
     }
 
+    /*
     function resendVerificationEmail(userData) {
         return new Promise((resolve, reject) => {
-            // 실제 구현시 AJAX 호출
-            setTimeout(() => {
-                resolve();
-            }, 1000);
+            const data = new URLSearchParams();
+            data.append("email", userData.email)
 
-            /* 실제 구현시 사용할 코드
-            $.ajax({
-                url: '/api/auth/resend-verification',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ email: userData.email }),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    [csrfHeader]: csrfToken
+            fetch(ctxPath + "Auth/send-verification", {
+                method: "post"
+                , headers: { 'Content-Type' : 'application/x-www-form-urlencoded'}
+                , body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message)
+                    return reject(data)
                 }
-            }).done(resolve).fail(reject);
-            */
 
-            fetch()
+                if (data.data)
+                    return reject(null)
+
+                resolve();
+            })
+            .catch(error => console.error('Resending verification is failed : ', error))
+            .finally(() => hideLoading($(this)))
         });
     }
+    */
 
-    function completeRegistration(userData, otp) {
+    function completeRegistration(userData) {
         return new Promise((resolve, reject) => {
-            // 실제 구현시 AJAX 호출
-            setTimeout(() => {
-                if (otp === '123456') { // 임시 테스트 OTP
-                    resolve();
-                } else {
-                    reject(new Error('Invalid verification code.'));
-                }
-            }, 1500);
+            // const data = new URLSearchParams();
+            // data.append("email", userData.email)
+            // data.append("user", userData)
+            // data.append("otp", otp)
 
-            /* 실제 구현시 사용할 코드
-            $.ajax({
-                url: '/api/auth/register',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ ...userData, otp: otp }),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    [csrfHeader]: csrfToken
-                }
-            }).done(resolve).fail(reject);
-            */
+            fetch(ctxPath + "Auth/confirm-verification-code", {
+                method: "post"
+                , headers: { 'Content-Type' : 'application/json'}
+                , body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // alert(data.message)
+                if(!data.success) return reject(data);
+
+                return resolve();
+            })
+            .catch(error => {
+                return reject(error.message)
+            })
         });
     }
 

@@ -41,7 +41,6 @@ public class UserCustomImpl implements UserCustom {
         BooleanBuilder fieldBuilder = QuerydslUtil.customBooleanBuilder(User.class, fconds);
         OrderSpecifier[] sortBuilder = QuerydslUtil.customOrderSpecifiers(User.class, sconds);
 
-
         User result = queryFactory.selectFrom(user).where(fieldBuilder).orderBy(sortBuilder).fetchOne();
 
         return result;

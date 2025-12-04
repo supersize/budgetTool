@@ -9,10 +9,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <!-- Bootstrap 5 -->
   <link th:href="@{/bootstrap/css/bootstrap.css}" rel="stylesheet">
-  <script th:src="@{/bootstrap/js/bootstrap.js}"></script>
-  <script th:src="@{/bootstrap/js/bootstrap.bundle.js}"></script>
+  <script type="application/javascript" th:src="@{/bootstrap/js/bootstrap.js}"></script>
+  <script type="application/javascript"th:src="@{/bootstrap/js/bootstrap.bundle.js}"></script>
   <!-- jQuery 3.7.1 -->
-  <script th:src="@{/js/jQuery/jquery-3.7.1.min.js}"></script>
+  <script type="application/javascript" th:src="@{/js/jQuery/jquery-3.7.1.min.js}"></script>
 
   <!-- Common Styles -->
   <link th:href="@{/css/common/common.css}" rel="stylesheet">
@@ -20,6 +20,9 @@
   <!-- Page-specific Additional Styles -->
   <th:block layout:fragment="styles"></th:block>
   <th:block th:insert="~{common/common :: global-config}"></th:block>
+
+  <!--global config -->
+  <script th:src="@{/js/common/api.js}"></script>
 
 </head>
 <body>

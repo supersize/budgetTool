@@ -2,16 +2,17 @@ package com.example.budgetTool.model.entity;
 
 import com.example.budgetTool.model.enums.TempCodeType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -21,7 +22,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+@AllArgsConstructor
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,15 +50,14 @@ public class User {
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;
 
-    @Column(name = "temp_code", length = 10)
-    private String tempCode;
+    @Column(name = "occupation", nullable = false)
+    private String occupation;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "temp_code_type")
-    private TempCodeType tempCodeType;
+    @Column(name = "income_range", nullable = false)
+    private String incomeRange;
 
-    @Column(name = "temp_code_expires")
-    private LocalDateTime tempCodeExpires;
+//    @Column(name = "financial_goals", nullable = false)
+//    private List<String> financialGoals;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -72,37 +73,26 @@ public class User {
     @Column(name = "salt", nullable = false)
     private String salt;
 
-    private User(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth) {
+    @Transient
+    private String otp;
+
+    private User(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth, String otp) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
+        this.otp = otp;
     }
 
-    public static User of(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth) {
-        return new User(email, passwordHash, firstName, lastName, dateOfBirth);
+    public static User of(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth, String otp) {
+        return new User(email, passwordHash, firstName, lastName, dateOfBirth, otp);
     }
 
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
-    public void setTempCode(String code, TempCodeType type, LocalDateTime expires) {
-        this.tempCode = code;
-        this.tempCodeType = type;
-        this.tempCodeExpires = expires;
-    }
-
-    public boolean isTempCodeValid() {
-        return tempCode != null && tempCodeExpires != null && tempCodeExpires.isAfter(LocalDateTime.now());
-    }
-
-    public void clearTempCode() {
-        this.tempCode = null;
-        this.tempCodeType = null;
-        this.tempCodeExpires = null;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -114,5 +104,41 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+//        return this.firstName + " " + this.lastName;
+        return this.email;
     }
 }

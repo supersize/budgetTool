@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Internal Server Error</title>
+    <link rel="stylesheet" th:href="@{/css/common/error-pages.css}">
+</head>
+<body class="error-500">
+<div class="error-container">
+    <div class="error-icon">⚠️</div>
+    <div class="error-code">500</div>
+    <h1 class="error-title">Internal Server Error</h1>
+    <p class="error-message">
+        Sorry, we found an error in server.<br>
+        Please try again later.
+    </p>
+
+    <div class="button-container">
+        <a href="javascript:location.reload()" class="btn-error btn-back">
+            🔄 Refresh this page.
+        </a>
+        <a th:href="@{/}" class="btn-error btn-home">
+            Go Home
+        </a>
+    </div>
+
+    <div class="error-details" th:if="${message}">
+        <strong>Error Message:</strong><br>
+        <span th:text="${message}"></span>
+    </div>
+
+    <div class="error-info-box">
+        <h4>Help</h4>
+        <ul>
+            <li>Please, refresh this page.</li>
+            <li>Please, try again later</li>
+            <li>If you keep facing this problem, please ask an admin about this.</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -1,18 +1,28 @@
 package com.example.budgetTool.service;
 
+import com.example.budgetTool.model.dto.UserDto;
 import com.example.budgetTool.model.entity.User;
 import com.example.budgetTool.repository.UserRepository;
 import com.example.budgetTool.utils.ShaUtil;
 import com.example.budgetTool.utils.querydsl.FieldCondition;
+import com.example.budgetTool.utils.querydsl.LogicType;
+import com.example.budgetTool.utils.querydsl.Operator;
 import com.example.budgetTool.utils.querydsl.SortCondition;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +40,24 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
 
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        List<FieldCondition> fieldConditions = new ArrayList<>();
+        fieldConditions.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+
+        User user = this.userRepository.getUser(fieldConditions, null);
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail()
+                , user.getPasswordHash()
+                , user.getAuthorities()
+        );
+    }
 
     /**
      * send an e-mail
@@ -41,7 +65,7 @@ public class UserService {
      * @param subject
      * @param body
      */
-    public void sendEmail (String receiver, String subject, String body) {
+    public void sendEmail (String receiver, String subject, String body) throws MessagingException {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(receiver);
         mailMessage.setSubject(subject);
@@ -68,7 +92,7 @@ public class UserService {
         return this.userRepository.exist(fconds);
     }
 
-    public User getUser(List<FieldCondition> fconds, List<SortCondition> sconds) throws Exception {
+    public User getUser(List<FieldCondition> fconds, List<SortCondition> sconds) throws RuntimeException {
         if(fconds == null && sconds == null) {
             return null;
         }
@@ -76,6 +100,20 @@ public class UserService {
         return this.userRepository.getUser(fconds, sconds);
     }
 
+
+    public User addUser(User user) {
+        if(user == null) return null;
+
+        User newUser = this.userRepository.save(user);
+        return newUser;
+    }
+
+    public User updateUser(UserDto.Request userRequest) {
+        if(userRequest == null) return null;
+        
+        User updatedUser = this.userRepository.save(userRequest.toEntity(""));
+        return updatedUser;
+    }
 
     /*
     exist

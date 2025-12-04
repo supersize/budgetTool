@@ -14,6 +14,7 @@ $(document).ready(function() {
 
         showLoading($(this));
 
+
         const isEmailUsedURL = ctxPath + "Auth/isEmailInUse"
         // 서버에 이메일 확인 요청 (실제 구현시 AJAX 호출)
         fetch(`${isEmailUsedURL}?inputEmail=${encodeURIComponent(email)}`)
@@ -44,19 +45,23 @@ $(document).ready(function() {
 
         showLoading($(this));
 
+        //data setting
+        const data = new URLSearchParams();
+        data.append("email", email)
+        data.append("passwordHash", password)
+
         fetch(ctxPath + "Auth/login", {
             method: 'post'
-            , headers: { 'Content-Type' : 'application/json'}
-            , body: JSON.stringify({
-                email: email
-                , passwordHash : password
-            })
+            , headers: { 'Content-Type' : 'application/x-www-form-urlencoded'}
+            , body: data
         })
         .then(response => response.json())
         .then(data => {
             $('#userEmail').text(email);
             hideLoading($(this));
-            !data.success ? alert(data.message) : location.href=ctxPath
+
+            // alert(ctxPath + "main")
+            data.status != "success" ? alert(data.message) : location.href = ctxPath + "main"
         })
         .catch(error => console.error('email cannot be found ', error))
         .finally(() => hideLoading($(this)))

@@ -1,0 +1,441 @@
+/* ===================================
+   Common Error Page Styles
+   =================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+/* Background Gradients for Different Error Types */
+body.error-404 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.error-403 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.error-500 {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+body.error-default {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+/* Container */
+.error-container {
+    text-align: center;
+    padding: 50px 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Error Icon */
+.error-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: bounce 2s infinite;
+    display: inline-block;
+}
+
+/* Error Code */
+.error-code {
+    font-size: 120px;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: pulse 2s infinite;
+}
+
+/* Error Code Colors by Type */
+.error-404 .error-code {
+    color: #667eea;
+}
+
+.error-403 .error-code {
+    color: #f5576c;
+}
+
+.error-500 .error-code {
+    color: #ff6b6b;
+}
+
+.error-default .error-code {
+    color: #fcb69f;
+}
+
+/* Error Title */
+.error-title {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Error Message */
+.error-message {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* Button Base Styles */
+.btn-error {
+    border: none;
+    color: white;
+    padding: 12px 40px;
+    font-size: 16px;
+    border-radius: 25px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-error:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
+.btn-error:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary Button (Home) */
+.btn-home {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.error-404 .btn-home {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.error-404 .btn-home:hover {
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.error-403 .btn-home {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.error-403 .btn-home:hover {
+    box-shadow: 0 10px 20px rgba(245, 87, 108, 0.4);
+    color: white;
+}
+
+.error-500 .btn-home {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+.error-500 .btn-home:hover {
+    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.error-default .btn-home {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    color: #333;
+}
+
+.error-default .btn-home:hover {
+    box-shadow: 0 10px 20px rgba(252, 182, 159, 0.4);
+    color: #333;
+}
+
+/* Secondary Button (Back) */
+.btn-back {
+    background: #6c757d;
+}
+
+.btn-back:hover {
+    background: #5a6268;
+    box-shadow: 0 10px 20px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+/* Login Button */
+.btn-login {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+.btn-login:hover {
+    box-shadow: 0 10px 20px rgba(86, 171, 47, 0.4);
+    color: white;
+}
+
+/* Error Details */
+.error-details {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+    color: #999;
+}
+
+.error-details strong {
+    color: #666;
+    font-weight: 600;
+}
+
+.error-details span {
+    word-break: break-all;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+/* Info Box */
+.error-info-box {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 15px 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.error-403 .error-info-box {
+    border-left-color: #f5576c;
+}
+
+.error-500 .error-info-box {
+    border-left-color: #ff6b6b;
+}
+
+.error-info-box h4 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.error-info-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.error-info-box li {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.error-info-box li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.error-403 .error-info-box li:before {
+    color: #f5576c;
+}
+
+.error-500 .error-info-box li:before {
+    color: #ff6b6b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .error-container {
+        padding: 40px 30px;
+    }
+
+    .error-code {
+        font-size: 80px;
+    }
+
+    .error-title {
+        font-size: 24px;
+    }
+
+    .error-message {
+        font-size: 16px;
+    }
+
+    .error-icon {
+        font-size: 60px;
+    }
+
+    .btn-error {
+        padding: 10px 30px;
+        font-size: 14px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .btn-error {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-container {
+        padding: 30px 20px;
+    }
+
+    .error-code {
+        font-size: 60px;
+    }
+
+    .error-title {
+        font-size: 20px;
+    }
+
+    .error-message {
+        font-size: 14px;
+    }
+
+    .error-icon {
+        font-size: 50px;
+    }
+}
+
+/* Loading State */
+.btn-error.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn-error.loading:after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Focus Styles for Accessibility */
+.btn-error:focus {
+    outline: 3px solid rgba(102, 126, 234, 0.5);
+    outline-offset: 2px;
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    .error-container {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .error-title {
+        color: #ffffff;
+    }
+
+    .error-message {
+        color: #cccccc;
+    }
+
+    .error-details {
+        border-top-color: #333;
+        color: #999;
+    }
+
+    .error-info-box {
+        background: #2a2a2a;
+        border-left-color: #667eea;
+    }
+
+    .error-info-box h4 {
+        color: #ffffff;
+    }
+
+    .error-info-box li {
+        color: #cccccc;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white !important;
+    }
+
+    .error-container {
+        box-shadow: none;
+    }
+
+    .btn-error {
+        display: none;
+    }
+}

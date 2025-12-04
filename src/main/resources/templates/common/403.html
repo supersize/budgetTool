@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Access Denied</title>
+    <link rel="stylesheet" th:href="@{/css/common/error-pages.css}">
+</head>
+<body class="error-403">
+<div class="error-container">
+    <div class="error-icon">🚫</div>
+    <div class="error-code">403</div>
+    <h1 class="error-title">Access Denied</h1>
+    <p class="error-message">
+        Sorry, you can't approach this page.<br>
+        You could ask an admin or sign in with an appropriate account.
+    </p>
+
+    <div class="button-container">
+        <a href="javascript:history.back()" class="btn-error btn-back">
+            ← previous
+        </a>
+        <a th:href="@{/auth/login}" class="btn-error btn-login">
+            Login page
+        </a>
+        <a th:href="@{/}" class="btn-error btn-home">
+            Go Home
+        </a>
+    </div>
+
+    <div class="error-info-box">
+        <h4>Help</h4>
+        <ul>
+            <li>Please, check again the way you signed in was proper.</li>
+            <li>Please, check whether you have an authority or not.</li>
+            <li>Please, ask admin about your authority.</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

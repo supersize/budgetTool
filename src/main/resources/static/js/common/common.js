@@ -237,7 +237,9 @@ function formatCurrency(amount) {
 
 function logout() {
     showAlert('signing out...', 'info', 2000);
-    fetch(ctxPath + "logout")
+    fetch(ctxPath + "logout", {
+        method: "post"
+    })
         .then(response => response.json())
         .then(data => {
             console.log("here is logout.")
@@ -275,7 +277,7 @@ $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
     if (jqXHR.status === 401) {
         message = '인증이 필요합니다. 다시 로그인해주세요.';
         setTimeout(() => {
-            window.location.href = '/login';
+            window.location.href = ctxPath + '/login';
         }, 2000);
     } else if (jqXHR.status === 403) {
         message = '접근 권한이 없습니다.';

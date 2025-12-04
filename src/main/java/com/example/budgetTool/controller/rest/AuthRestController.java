@@ -2,8 +2,11 @@ package com.example.budgetTool.controller.rest;
 
 import com.example.budgetTool.model.dto.ApiResponse;
 import com.example.budgetTool.model.dto.UserDto;
+import com.example.budgetTool.model.dto.UserRecord;
 import com.example.budgetTool.model.entity.User;
+import com.example.budgetTool.service.RedisService;
 import com.example.budgetTool.service.UserService;
+import com.example.budgetTool.utils.JwtUtil;
 import com.example.budgetTool.utils.ShaUtil;
 import com.example.budgetTool.utils.querydsl.FieldCondition;
 import com.example.budgetTool.utils.querydsl.LogicType;
@@ -14,9 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,31 +36,26 @@ import java.util.List;
 public class AuthRestController {
 
     private final UserService userService;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final PasswordEncoder passwordEncoder;
+    private final RedisService redisService;
 
     /**
      * methodName : isEmailInUse
      * author : Jae-Hyeong Kim
      * description : check an input email exists or not
      *
-     * @param input email
+     * @param inputEmail
      * @return api response
      */
     @GetMapping("/isEmailInUse")
     public ApiResponse<Boolean> isEmailInUse (@RequestParam(required = true) String inputEmail) {
-
         ApiResponse<Boolean> res = new ApiResponse<>();
         try {
-
-//            int a = 1/0;
-
             List<FieldCondition> fconds = new ArrayList<>();
             fconds.add(new FieldCondition("email", Operator.EQ, inputEmail, LogicType.AND));
 
             boolean result = this.userService.exist(fconds);
-
-            // verification digit sending
-//            String randomDigits = ((int)(Math.random() * 10000)) + "";
-//            this.userService.sendEmail(inputEmail, "budgetTool verification", randomDigits);
             res = ApiResponse.SUCCESS(result);
         } catch (Exception e) {
             log.error("An error occurs when checking if email exists :", e);
@@ -92,18 +95,195 @@ public class AuthRestController {
             String currentPassword = result.getPasswordHash();
 
             ShaUtil shaUtil = new ShaUtil();
-            String inputPassword = shaUtil.getHash(user.getPasswordHash().getBytes(), result.getSalt());
+//            String inputPassword = shaUtil.getHash(user.getPasswordHash().getBytes(), result.getSalt());
+            String inputPassword = passwordEncoder.encode(user.getPasswordHash());
             if (!currentPassword.equals(inputPassword)) {
                 return ApiResponse.ERROR("Incorrect password! Please check it again");
             }
-
-            // generating token.
-
 
             res = ApiResponse.SUCCESS("login success");
         } catch (Exception e) {
             res = ApiResponse.ERROR("[error] an login error occurs : " + e.getMessage());
             log.error("An error occurs when checking if email exists :", e);
+        }
+
+        return res;
+    }
+
+
+    /**
+     * processing sending and saving verification code
+     * @param userRequest
+     * @return
+     */
+    @PostMapping("/send-verification")
+    public ApiResponse<String> sendVerificationEmail(@RequestBody UserDto.Request userRequest) {
+        ApiResponse<String> res = new ApiResponse<>();
+        try {
+            String email = userRequest.email();
+            // sending verification digit ex) 123456
+            int randomNum = ((int)(Math.random() * 1000000));
+            String randomDigits = String.format("%06d", randomNum); // 6자리 미만일시 0으로 채움
+            this.userService.sendEmail(email, "budgetTool verification", randomDigits);
+
+            // setting verification code 90's
+            this.redisService.setSingleData("verification_opt" + email, randomDigits, Duration.ofSeconds(90));
+
+            res = ApiResponse.SUCCESS("Verification email is successfully sent.");
+        } catch (Exception e) {
+            log.error("An error occurs when checking if email exists :", e);
+            res = ApiResponse.ERROR("[error] an used email checking error occurs : " + e.getMessage());
+        }
+
+        return res;
+    }
+
+
+    /**
+     *
+     * @param userRequest
+     * @return
+     */
+    @PostMapping("/confirm-verification-code")
+    public ApiResponse<String> confirmVerificationCode (@RequestBody(required = true) UserDto.Request userRequest) {
+        ApiResponse<String> res = new ApiResponse<>();
+        try{
+            String inputOtp = userRequest.otp();
+            String registeredOtp = this.redisService.getSingleData("verification_opt" + userRequest.email());
+
+            if (registeredOtp == null || !registeredOtp.equals(inputOtp)) {
+                log.info("The inputOpt is not matched with the registered one or expired.");
+                return ApiResponse.ERROR("Wrong or expired opt. Please check again.");
+            }
+
+
+            userRequest.
+//            userRequest.setPasswordHash(this.passwordEncoder.encode(userRequest.passwordHash()));
+//            ShaUtil shaUtil = new ShaUtil();
+//            userRequest.setSalt(shaUtil.generateSalt());
+            User newUser = this.userService.addUser(userRequest);
+
+            res = ApiResponse.SUCCESS("");
+
+        } catch (Exception e) {
+            log.error("An error occurs when confirming verification code :", e);
+            res = ApiResponse.ERROR("[error] confirming verification code : " + e.getMessage());
+        }
+
+        return res;
+    }
+
+    /**
+     * Send password reset verification code
+     * @param email
+     * @return
+     */
+    @PostMapping("/forgot-password/send-code")
+    public ApiResponse<String> sendPasswordResetCode(@RequestParam(required = true) String email) {
+        ApiResponse<String> res = new ApiResponse<>();
+        try {
+            // Check if email exists
+            List<FieldCondition> fconds = new ArrayList<>();
+            fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+
+            if (!this.userService.exist(fconds)) {
+                return ApiResponse.ERROR("Email not found in our system.");
+            }
+
+            // Generate 6-digit verification code
+            String resetCode = String.format("%06d", (int)(Math.random() * 1000000));
+            
+            // Send email
+            this.userService.sendEmail(email, "Password Reset Verification", 
+                "Your password reset code is: " + resetCode + "\n\nThis code will expire in 15 minutes.");
+
+            // Store code in Redis with 15 minutes expiration
+            this.redisService.setSingleData("PasswordReset_" + email, resetCode, Duration.ofMinutes(15));
+
+            res = ApiResponse.SUCCESS("Password reset code has been sent to your email.");
+        } catch (Exception e) {
+            log.error("An error occurs when sending password reset code:", e);
+            res = ApiResponse.ERROR("[error] Failed to send password reset code: " + e.getMessage());
+        }
+
+        return res;
+    }
+
+    /**
+     * Verify password reset code
+     * @param email
+     * @param code
+     * @return
+     */
+    @PostMapping("/forgot-password/verify-code")
+    public ApiResponse<String> verifyPasswordResetCode(
+            @RequestParam(required = true) String email,
+            @RequestParam(required = true) String code) {
+        ApiResponse<String> res = new ApiResponse<>();
+        try {
+            String storedCode = this.redisService.getSingleData("PasswordReset_" + email);
+
+            if (storedCode == null || !storedCode.equals(code)) {
+                log.info("Password reset code verification failed for email: " + email);
+                return ApiResponse.ERROR("Invalid or expired verification code.");
+            }
+
+            // Generate a temporary token for password reset
+            String resetToken = java.util.UUID.randomUUID().toString();
+            this.redisService.setSingleData("ResetToken_" + email, resetToken, Duration.ofMinutes(15));
+
+            res = ApiResponse.SUCCESS(resetToken);
+
+        } catch (Exception e) {
+            log.error("An error occurs when verifying password reset code:", e);
+            res = ApiResponse.ERROR("[error] Verification failed: " + e.getMessage());
+        }
+
+        return res;
+    }
+
+    /**
+     * Reset password with verification token
+     * @param email
+     * @param newPassword
+     * @param resetToken
+     * @return
+     */
+    @PostMapping("/forgot-password/reset")
+    public ApiResponse<String> resetPassword(
+            @RequestParam(required = true) String email,
+            @RequestParam(required = true) String newPassword,
+            @RequestParam(required = true) String resetToken) {
+        ApiResponse<String> res = new ApiResponse<>();
+        try {
+            // Verify reset token
+            String storedToken = this.redisService.getSingleData("ResetToken_" + email);
+            if (storedToken == null || !storedToken.equals(resetToken)) {
+                return ApiResponse.ERROR("Invalid or expired reset token.");
+            }
+
+            // Get user
+            List<FieldCondition> fconds = new ArrayList<>();
+            fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+            User user = this.userService.getUser(fconds, null);
+
+            if (user == null) {
+                return ApiResponse.ERROR("User not found.");
+            }
+
+            // Update password
+            user.setPasswordHash(this.passwordEncoder.encode(newPassword));
+            this.userService.updateUser(user);
+
+            // Clean up Redis tokens
+            this.redisService.deleteSingleData("PasswordReset_" + email);
+            this.redisService.deleteSingleData("ResetToken_" + email);
+
+            res = ApiResponse.SUCCESS("Password has been reset successfully.");
+
+        } catch (Exception e) {
+            log.error("An error occurs when resetting password:", e);
+            res = ApiResponse.ERROR("[error] Failed to reset password: " + e.getMessage());
         }
 
         return res;
