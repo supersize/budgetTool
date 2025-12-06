@@ -12,5 +12,7 @@ package com.example.budgetTool.model.dto;
  */
 public class UserRecord {
 
-    public record forgotPassword(String email, String opt) {}
+    public record verification(
+            String email, String newPassword, String resetToken
+    ) {}
 }

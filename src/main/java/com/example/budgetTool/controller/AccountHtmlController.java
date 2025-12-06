@@ -1,6 +1,8 @@
 package com.example.budgetTool.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AccountHtmlController {
 
-
     @GetMapping("/accounts")
-    public String goToAccountListPage () {
-
-        String test = "yoyo";
-
-        return "board/dashboard";
+    public String goToAccountListPage(HttpServletRequest request, Model model) {
+        // Add currentPath to model for sidebar active state
+        String uri = request.getRequestURI();
+        String contextPath = request.getContextPath();
+        String currentPath = uri.substring(contextPath.length());
+        
+        model.addAttribute("currentPath", currentPath);
+        
+        return "account/account-list";
     }
 }

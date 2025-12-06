@@ -111,8 +111,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String userEmail = JwtUtil.getUserEmail(currentAccessToken);
 
             String storedAccessToken = this.redisService.getSingleData(ACCESS_TOKEN_PRIFIX + userEmail);
-            String storedRefreshToken = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + userEmail);
-            if(storedAccessToken == null || storedRefreshToken == null) {
+//            String storedRefreshToken = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + userEmail);
+            if(storedAccessToken == null) {
+//            if(storedAccessToken == null || storedRefreshToken == null) {
                 log.error("JWT token does not exist in Redis for user: {}", userEmail);
                 throw new AuthenticationFailedException("JWT token does not exist.");
             }
@@ -134,6 +135,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             log.info("Authentication is successed");
         } catch (AuthenticationFailedException e){
+            //TODO how to dael with login errors in more effective way??????
             log.error("Authentication failed: {}", e.getMessage());
             // SecurityContext를 비우고 예외를 전파
             SecurityContextHolder.clearContext();

@@ -43,7 +43,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -108,12 +108,13 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
-    public User updateUser(UserDto.Request userRequest) {
-        if(userRequest == null) return null;
+    public User updateUser(User user) {
+        if(user == null) return null;
         
-        User updatedUser = this.userRepository.save(userRequest.toEntity(""));
+        User updatedUser = this.userRepository.save(user);
         return updatedUser;
     }
+
 
     /*
     exist

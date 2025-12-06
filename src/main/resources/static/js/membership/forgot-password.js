@@ -71,18 +71,20 @@ $(document).ready(function() {
             email: email
         };
 
-        fetch(ctxPath + "Auth/send-verification", {
+        fetch(ctxPath + "Auth/forgot-password/send-code", {
             method: "post"
-            ,headers: { 'Content-Type' : 'application/json'}
+            , headers: { 'Content-Type' : 'application/json'}
             , body: JSON.stringify(requestBody)
         })
         .then(response => response.json())
         .then(data => {
             // $('#userEmail').text(email);
             // hideLoading($(this));
+            userEmail = email;
+            $('#maskedEmail').text(maskEmail(email));
+            showStep(2);
+            startResendTimer();
 
-            alert("you did it!")
-            // data.status != "success" ? alert(data.message) : location.href = ctxPath + "main"
         })
         .catch(error => console.error('email cannot be found ', error))
         // .finally(() => setButtonLoading('#sendCodeBtn', false))
@@ -139,9 +141,9 @@ $(document).ready(function() {
 
         $.ajax({
             url: '/api/auth/forgot-password/send-code',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ email: userEmail }),
+            method: 'POST'
+            , headers: { 'Content-Type' : 'application/json'}
+            , data: JSON.stringify({ email: userEmail }),
             success: function(response) {
                 alert('Verification code has been resent.');
                 startResendTimer();
@@ -201,27 +203,36 @@ $(document).ready(function() {
 
         setButtonLoading(this, true);
 
-        $.ajax({
-            url: '/Auth/forgot-password/verify-code',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                email: userEmail,
-                code: otp
-            }),
-            success: function(response) {
-                verificationToken = response.token;
-                showStep(3);
-            },
-            error: function(xhr) {
-                const errorMsg = xhr.responseJSON?.message || 'Invalid verification code.';
-                showError('otpError', errorMsg);
-                clearOTPInputs();
-            },
-            complete: function() {
-                setButtonLoading('#verifyCodeBtn', false);
-            }
-        });
+
+        const requestBody = {
+            email: userEmail,
+            otp: otp
+        };
+
+        fetch(ctxPath + "Auth/forgot-password/verify-code", {
+            method: 'POST'
+            , headers: { 'Content-Type' : 'application/json'}
+            , body: JSON.stringify(requestBody)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success)
+                throw new Error(data.message)
+
+            verificationToken = data.data;
+            $('#maskedEmail').text(maskEmail(userEmail));
+            showStep(3);
+            startResendTimer();
+
+        })
+        .catch(error => {
+            const errorMsg = error.message || 'Invalid verification code.';
+            showError('otpError', errorMsg);
+            clearOTPInputs();
+        })
+        .finally(() => {
+            setButtonLoading('#verifyCodeBtn', false);
+        })
     });
 
     function getOTPValue() {
@@ -320,28 +331,54 @@ $(document).ready(function() {
 
         setButtonLoading(this, true);
 
-        $.ajax({
-            url: '/api/auth/forgot-password/reset',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                email: userEmail,
-                token: verificationToken,
-                newPassword: newPassword
-            }),
-            success: function(response) {
-                $('#successStep').show();
-                $('.form-step').not('#successStep').hide();
-                $('.step-indicator').hide();
-            },
-            error: function(xhr) {
-                const errorMsg = xhr.responseJSON?.message || 'Failed to reset password.';
-                showError('newPasswordError', errorMsg);
-            },
-            complete: function() {
-                setButtonLoading('#resetPasswordBtn', false);
-            }
-        });
+        const requestBody = {
+            email: userEmail
+            , newPassword : newPassword
+            , resetToken : verificationToken
+        }
+        fetch(ctxPath + "Auth/forgot-password/reset", {
+            method: "POST"
+            , headers: {"Content-Type" : "application/json"}
+            , body : JSON.stringify(requestBody)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success)
+                throw new Error(data.message)
+
+            $('#successStep').show();
+            $('.form-step').not('#successStep').hide();
+            $('.step-indicator').hide();
+        })
+        .catch(error => {
+            const errorMsg = error.message || 'Failed to reset password.';
+            showError('newPasswordError', errorMsg);
+        })
+        .finally(() => setButtonLoading('#resetPasswordBtn', false))
+
+
+        // $.ajax({
+        //     url: '/api/auth/forgot-password/reset',
+        //     method: 'POST',
+        //     contentType: 'application/json',
+        //     data: JSON.stringify({
+        //         email: userEmail,
+        //         token: verificationToken,
+        //         newPassword: newPassword
+        //     }),
+        //     success: function(response) {
+        //         $('#successStep').show();
+        //         $('.form-step').not('#successStep').hide();
+        //         $('.step-indicator').hide();
+        //     },
+        //     error: function(xhr) {
+        //         const errorMsg = xhr.responseJSON?.message || 'Failed to reset password.';
+        //         showError('newPasswordError', errorMsg);
+        //     },
+        //     complete: function() {
+        //         setButtonLoading('#resetPasswordBtn', false);
+        //     }
+        // });
     });
 
     function validatePassword(password) {

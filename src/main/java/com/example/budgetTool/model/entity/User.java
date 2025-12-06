@@ -76,17 +76,26 @@ public class User implements UserDetails {
     @Transient
     private String otp;
 
-    private User(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth, String otp) {
+    private User(String email, String passwordHash, String firstName, String lastName
+            , String phoneNumber, LocalDate dateOfBirth, Boolean emailVerified, String occupation
+            , String incomeRange, String otp) {
         this.email = email;
         this.passwordHash = passwordHash;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+        this.emailVerified = emailVerified;
+        this.occupation = occupation;
+        this.incomeRange = incomeRange;
         this.otp = otp;
     }
 
-    public static User of(String email, String passwordHash, String firstName, String lastName, LocalDate dateOfBirth, String otp) {
-        return new User(email, passwordHash, firstName, lastName, dateOfBirth, otp);
+    public static User of(String email, String passwordHash, String firstName, String lastName
+            , String phoneNumber, LocalDate dateOfBirth, Boolean emailVerified
+            , String occupation, String incomeRange, String otp) {
+        return new User(email, passwordHash, firstName, lastName, phoneNumber, dateOfBirth, emailVerified
+                , occupation, incomeRange, otp);
     }
 
     public String getFullName() {

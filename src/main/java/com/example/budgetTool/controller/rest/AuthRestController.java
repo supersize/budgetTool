@@ -121,6 +121,14 @@ public class AuthRestController {
         ApiResponse<String> res = new ApiResponse<>();
         try {
             String email = userRequest.email();
+            // Check if email exists
+            List<FieldCondition> fconds = new ArrayList<>();
+            fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+
+            if (!this.userService.exist(fconds)) {
+                return ApiResponse.ERROR("Email not found in our system.");
+            }
+
             // sending verification digit ex) 123456
             int randomNum = ((int)(Math.random() * 1000000));
             String randomDigits = String.format("%06d", randomNum); // 6자리 미만일시 0으로 채움
@@ -140,7 +148,8 @@ public class AuthRestController {
 
 
     /**
-     *
+     * Verify opt code user has input.
+     * After verification, signing up will be completed.
      * @param userRequest
      * @return
      */
@@ -156,13 +165,10 @@ public class AuthRestController {
                 return ApiResponse.ERROR("Wrong or expired opt. Please check again.");
             }
 
+            User targetUser = userRequest.toEntity(this.passwordEncoder.encode(userRequest.passwordHash()));
+            User newUser = this.userService.addUser(targetUser);
 
-            userRequest.
-//            userRequest.setPasswordHash(this.passwordEncoder.encode(userRequest.passwordHash()));
-//            ShaUtil shaUtil = new ShaUtil();
-//            userRequest.setSalt(shaUtil.generateSalt());
-            User newUser = this.userService.addUser(userRequest);
-
+            //TODO set the sign-up success response!
             res = ApiResponse.SUCCESS("");
 
         } catch (Exception e) {
@@ -175,13 +181,15 @@ public class AuthRestController {
 
     /**
      * Send password reset verification code
-     * @param email
+     * @param userRequest
      * @return
      */
     @PostMapping("/forgot-password/send-code")
-    public ApiResponse<String> sendPasswordResetCode(@RequestParam(required = true) String email) {
+    public ApiResponse<String> sendPasswordResetCode(@RequestBody(required = true) UserDto.Request userRequest) {
         ApiResponse<String> res = new ApiResponse<>();
         try {
+            String email = userRequest.email();
+
             // Check if email exists
             List<FieldCondition> fconds = new ArrayList<>();
             fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
@@ -211,16 +219,15 @@ public class AuthRestController {
 
     /**
      * Verify password reset code
-     * @param email
-     * @param code
+     * @param userRequest
      * @return
      */
     @PostMapping("/forgot-password/verify-code")
-    public ApiResponse<String> verifyPasswordResetCode(
-            @RequestParam(required = true) String email,
-            @RequestParam(required = true) String code) {
+    public ApiResponse<String> verifyPasswordResetCode(@RequestBody UserDto.Request userRequest) {
         ApiResponse<String> res = new ApiResponse<>();
         try {
+            String email = userRequest.email();
+            String code = userRequest.otp();
             String storedCode = this.redisService.getSingleData("PasswordReset_" + email);
 
             if (storedCode == null || !storedCode.equals(code)) {
@@ -244,18 +251,17 @@ public class AuthRestController {
 
     /**
      * Reset password with verification token
-     * @param email
-     * @param newPassword
-     * @param resetToken
+     * @param verification
      * @return
      */
     @PostMapping("/forgot-password/reset")
-    public ApiResponse<String> resetPassword(
-            @RequestParam(required = true) String email,
-            @RequestParam(required = true) String newPassword,
-            @RequestParam(required = true) String resetToken) {
+    public ApiResponse<String> resetPassword(@RequestBody UserDto.verification verification) {
         ApiResponse<String> res = new ApiResponse<>();
         try {
+            String email = verification.email();
+            String newPassword = verification.newPassword();
+            String resetToken = verification.resetToken();
+
             // Verify reset token
             String storedToken = this.redisService.getSingleData("ResetToken_" + email);
             if (storedToken == null || !storedToken.equals(resetToken)) {
@@ -267,9 +273,8 @@ public class AuthRestController {
             fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
             User user = this.userService.getUser(fconds, null);
 
-            if (user == null) {
+            if (user == null)
                 return ApiResponse.ERROR("User not found.");
-            }
 
             // Update password
             user.setPasswordHash(this.passwordEncoder.encode(newPassword));

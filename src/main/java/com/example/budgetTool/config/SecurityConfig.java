@@ -100,7 +100,7 @@ public class SecurityConfig {
                         } else {
                             log.info("hahaha!!!");
                             // 일반 요청은 로그인 페이지로
-                            response.sendRedirect(request.getContextPath() + "/login");
+                            response.sendRedirect(request.getContextPath() + "/auth/login");
                         }
                     })
                     .accessDeniedHandler((request, response, accessDeniedException) -> {

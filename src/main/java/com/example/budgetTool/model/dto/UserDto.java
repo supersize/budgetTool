@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public record UserDto(
         Long id,
         String email,
+        String passwordHash,
         String firstName,
         String lastName,
         String phoneNumber,
@@ -37,6 +38,8 @@ public record UserDto(
                 .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .emailVerified(user.getEmailVerified())
+                .occupation(user.getOccupation())
+                .incomeRange(user.getIncomeRange())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .isActive(user.getIsActive())
@@ -46,15 +49,19 @@ public record UserDto(
 
     public record Request(
             String email,
-            String password,
+            String passwordHash,
             String firstName,
             String lastName,
-            String phoneNumber,
-            LocalDate dateOfBirth
+            String phoneNumber
+            , LocalDate dateOfBirth
+            , Boolean emailVerified
+            , String occupation
+            , String incomeRange
             , String otp
     ) {
         public User toEntity(String passwordHash) {
-            return User.of(email, passwordHash, firstName, lastName, dateOfBirth, otp);
+            return User.of(email, passwordHash, firstName, lastName, phoneNumber, dateOfBirth, emailVerified
+                    , occupation, incomeRange , otp);
         }
     }
 
@@ -103,4 +110,8 @@ public record UserDto(
             );
         }
     }
+
+    public record verification(
+            String email, String newPassword, String resetToken
+    ) {}
 }

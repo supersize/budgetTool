@@ -44,9 +44,9 @@ public class JwtUtil {
         return Jwts.builder()
 //                .setHeaderParam("kid", "test")
                 .setSubject(userEmail)
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
 //                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 mins
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 10)) // 10 sec
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 10)) // 10 sec
                 .signWith(KEY)
                 .compact();
 
