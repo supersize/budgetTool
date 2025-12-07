@@ -102,6 +102,11 @@ public class User implements UserDetails {
         return firstName + " " + lastName;
     }
 
+    // For Thymeleaf sec:authentication="principal.name"
+    public String getName() {
+        return getFullName();
+    }
+
 
     @Override
     public boolean equals(Object obj) {

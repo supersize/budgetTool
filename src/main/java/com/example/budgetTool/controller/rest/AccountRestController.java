@@ -4,21 +4,13 @@ import com.example.budgetTool.model.dto.AccountDto;
 import com.example.budgetTool.model.dto.ApiResponse;
 import com.example.budgetTool.model.entity.Account;
 import com.example.budgetTool.model.entity.User;
-import com.example.budgetTool.model.enums.AccountType;
 import com.example.budgetTool.service.AccountService;
-import com.example.budgetTool.service.UserService;
-import com.example.budgetTool.utils.querydsl.FieldCondition;
-import com.example.budgetTool.utils.querydsl.LogicType;
-import com.example.budgetTool.utils.querydsl.Operator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,37 +31,15 @@ import java.util.stream.Collectors;
 public class AccountRestController {
 
     private final AccountService accountService;
-    private final UserService userService;
-
-    /**
-     * Get current authenticated user
-     * @return User entity
-     */
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
-        }
-
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-
-        List<FieldCondition> fconds = new ArrayList<>();
-        fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
-
-        return this.userService.getUser(fconds, null);
-    }
 
     /**
      * Get all accounts for current user
      * @return API response with list of accounts
      */
     @GetMapping
-    public ApiResponse<List<AccountDto.Response>> getAccounts() {
+    public ApiResponse<List<AccountDto.Response>> getAccounts(@AuthenticationPrincipal User currentUser) {
         ApiResponse<List<AccountDto.Response>> res = new ApiResponse<>();
         try {
-            User currentUser = getCurrentUser();
-
             List<Account> accounts = this.accountService.getAccountListByUserId(currentUser.getId());
 
             List<AccountDto.Response> responseList = accounts.stream()
@@ -92,11 +62,9 @@ public class AccountRestController {
      * @return API response with account details
      */
     @GetMapping("/{accountId}")
-    public ApiResponse<AccountDto.Response> getAccount(@PathVariable Long accountId) {
+    public ApiResponse<AccountDto.Response> getAccount(@PathVariable Long accountId, @AuthenticationPrincipal User currentUser) {
         ApiResponse<AccountDto.Response> res = new ApiResponse<>();
         try {
-            User currentUser = getCurrentUser();
-
             Account account = this.accountService.getAccountById(accountId);
 
             // Check if account belongs to current user
@@ -123,37 +91,36 @@ public class AccountRestController {
      * @return API response with created account
      */
     @PostMapping
-    public ApiResponse<AccountDto.Response> createAccount(@RequestBody CreateAccountRequest request) {
+    public ApiResponse<AccountDto.Response> createAccount(@RequestBody AccountDto.CreateRequest request
+            , @AuthenticationPrincipal User currentUser) {
         ApiResponse<AccountDto.Response> res = new ApiResponse<>();
         try {
-            User currentUser = getCurrentUser();
-
             // Validate request
-            if (request.bankName == null || request.bankName.trim().isEmpty()) {
+            if (request.bankName() == null || request.bankName().trim().isEmpty()) {
                 return ApiResponse.ERROR("Bank name is required");
             }
-            if (request.accountNumber == null || request.accountNumber.trim().isEmpty()) {
+            if (request.accountNumber() == null || request.accountNumber().trim().isEmpty()) {
                 return ApiResponse.ERROR("Account number is required");
             }
-            if (request.accountType == null) {
+            if (request.accountType() == null) {
                 return ApiResponse.ERROR("Account type is required");
             }
-            if (request.currency == null || request.currency.trim().isEmpty()) {
+            if (request.currency() == null || request.currency().trim().isEmpty()) {
                 return ApiResponse.ERROR("Currency is required");
             }
 
             // Create account entity
             Account account = Account.of(
                     currentUser,
-                    request.accountNumber,
-                    request.accountType,
-                    request.bankName,
-                    request.currency
+                    request.accountNumber(),
+                    request.accountType(),
+                    request.bankName(),
+                    request.currency()
             );
 
             // Set initial balance if provided
-            if (request.initialBalance != null && request.initialBalance.compareTo(BigDecimal.ZERO) > 0) {
-                account.setBalance(request.initialBalance);
+            if (request.initialBalance() != null && request.initialBalance().compareTo(BigDecimal.ZERO) > 0) {
+                account.setBalance(request.initialBalance());
             }
 
             Account savedAccount = this.accountService.addAccount(account);
@@ -180,12 +147,10 @@ public class AccountRestController {
      */
     @PutMapping("/{accountId}")
     public ApiResponse<AccountDto.Response> updateAccount(
-            @PathVariable Long accountId,
-            @RequestBody UpdateAccountRequest request) {
+            @PathVariable Long accountId, @RequestBody AccountDto.UpdateRequest request
+        , @AuthenticationPrincipal User currentUser) {
         ApiResponse<AccountDto.Response> res = new ApiResponse<>();
         try {
-            User currentUser = getCurrentUser();
-
             Account account = this.accountService.getAccountById(accountId);
 
             // Check if account belongs to current user
@@ -194,20 +159,20 @@ public class AccountRestController {
             }
 
             // Update account fields
-            if (request.bankName != null && !request.bankName.trim().isEmpty()) {
-                account.setBankName(request.bankName);
+            if (request.bankName() != null && !request.bankName().trim().isEmpty()) {
+                account.setBankName(request.bankName());
             }
-            if (request.accountNumber != null && !request.accountNumber.trim().isEmpty()) {
-                account.setAccountNumber(request.accountNumber);
+            if (request.accountNumber() != null && !request.accountNumber().trim().isEmpty()) {
+                account.setAccountNumber(request.accountNumber());
             }
-            if (request.accountType != null) {
-                account.setAccountType(request.accountType);
+            if (request.accountType() != null) {
+                account.setAccountType(request.accountType());
             }
-            if (request.currency != null && !request.currency.trim().isEmpty()) {
-                account.setCurrency(request.currency);
+            if (request.currency() != null && !request.currency().trim().isEmpty()) {
+                account.setCurrency(request.currency());
             }
-            if (request.isActive != null) {
-                account.setIsActive(request.isActive);
+            if (request.isActive() != null) {
+                account.setIsActive(request.isActive());
             }
 
             Account updatedAccount = this.accountService.updateAccount(account);
@@ -232,11 +197,9 @@ public class AccountRestController {
      * @return API response
      */
     @DeleteMapping("/{accountId}")
-    public ApiResponse<String> deleteAccount(@PathVariable Long accountId) {
+    public ApiResponse<String> deleteAccount(@PathVariable Long accountId, @AuthenticationPrincipal User currentUser) {
         ApiResponse<String> res = new ApiResponse<>();
         try {
-            User currentUser = getCurrentUser();
-
             Account account = this.accountService.getAccountById(accountId);
 
             // Check if account belongs to current user
@@ -258,26 +221,4 @@ public class AccountRestController {
 
         return res;
     }
-
-    /**
-     * Request DTO for creating account
-     */
-    public record CreateAccountRequest(
-            String bankName,
-            String accountNumber,
-            AccountType accountType,
-            String currency,
-            BigDecimal initialBalance
-    ) {}
-
-    /**
-     * Request DTO for updating account
-     */
-    public record UpdateAccountRequest(
-            String bankName,
-            String accountNumber,
-            AccountType accountType,
-            String currency,
-            Boolean isActive
-    ) {}
 }

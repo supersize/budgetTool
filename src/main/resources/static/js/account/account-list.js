@@ -412,9 +412,4 @@ $(document).ready(function() {
         div.textContent = text;
         return div.innerHTML;
     }
-
-    function showAlert(message, type) {
-        // Temporary - replace with toast notification
-        alert(message);
-    }
 });

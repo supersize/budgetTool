@@ -39,16 +39,31 @@ public record AccountDto(
                 .build();
     }
 
-    public record Request(
+    /**
+     * Request DTO for creating account
+     */
+    public record CreateRequest(
+            String bankName,
             String accountNumber,
             AccountType accountType,
-            String bankName,
-            String currency
+            String currency,
+            BigDecimal initialBalance
     ) {
         public Account toEntity(User user) {
             return Account.of(user, accountNumber, accountType, bankName, currency);
         }
     }
+
+    /**
+     * Request DTO for updating account
+     */
+    public record UpdateRequest(
+            String bankName,
+            String accountNumber,
+            AccountType accountType,
+            String currency,
+            Boolean isActive
+    ) {}
 
     public record Response(
             Long id,

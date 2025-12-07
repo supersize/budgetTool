@@ -1,17 +1,60 @@
 package com.example.budgetTool.model.enums;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Getter;
 
+public enum TransactionStatus implements EnumCodeSupport {
+    PENDING("PENDING", "Pending"),
+    COMPLETED("COMPLETED", "Completed"),
+    FAILED("FAILED", "Failed"),
+    CANCELLED("CANCELLED", "Cancelled");
 
-@Getter
-@RequiredArgsConstructor
-public enum TransactionStatus {
-    PENDING("대기중", "거래가 처리 대기 중인 상태"),
-    COMPLETED("완료", "거래가 성공적으로 완료된 상태"),
-    FAILED("실패", "거래가 실패한 상태"),
-    CANCELLED("취소", "거래가 취소된 상태");
+    private final String code;
+    private final String text;
 
-    private final String description;
-    private final String detail;
+    private TransactionStatus(String code, String text) {
+        this.code = code;
+        this.text = text;
+    }
+
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getCode() {
+        return this.code;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public static TransactionStatus codeOf(String code) {
+        if (code == null || "".equals(code)) return null;
+
+        TransactionStatus found = null;
+
+        for (TransactionStatus finding : TransactionStatus.values()) {
+            if (finding.code.equals(code)) {
+                found = finding;
+                break;
+            }
+        }
+
+        return found;
+    }
+
+    public static TransactionStatus textOf(String text) {
+        if (text == null || "".equals(text)) return null;
+
+        TransactionStatus found = null;
+
+        for (TransactionStatus finding : TransactionStatus.values()) {
+            if (finding.text.equals(text)) {
+                found = finding;
+                break;
+            }
+        }
+
+        return found;
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.budgetTool.model.entity;
 
 import com.example.budgetTool.model.enums.AccountType;
+import com.example.budgetTool.model.enums.converter.AccountTypeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class Account {
     @Column(name = "account_number", nullable = false, unique = true, length = 50)
     private String accountNumber;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = AccountTypeConverter.class)
     @Column(name = "account_type", nullable = false)
     private AccountType accountType = AccountType.SAVINGS;
 

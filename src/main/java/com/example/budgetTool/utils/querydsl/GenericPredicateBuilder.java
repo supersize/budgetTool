@@ -7,6 +7,7 @@ import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.SimpleExpression;
+import lombok.extern.slf4j.Slf4j;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ import java.util.*;
  * -----------------------------------------------------------
  * 9/23/25        kimjaehyeong       created
  */
+@Slf4j
 public class GenericPredicateBuilder<T> {
     private final PathBuilder<T> pathBuilder;
 
@@ -74,18 +76,20 @@ public class GenericPredicateBuilder<T> {
      */
     private Predicate createPredicate( FieldCondition fc ) {
         String field = fc.getField();
-        Operator op = fc.getOperator();
+        Operator operator = fc.getOperator();
         Object value = fc.getValue();
 
         Class<?> type;
         try {
-            type = pathBuilder.getType().getDeclaredField(fc.getField()).getType();
+            // Support nested fields like "user.id"
+            type = getFieldType(pathBuilder.getType(), field);
             Object typeValue = convertValue(value, type);
-            if( typeValue == null && op != Operator.IS_NULL ) return null;
+            if( typeValue == null && operator != Operator.IS_NULL ) return null;
 
-            Path<?> path = pathBuilder.get(field);
+            // Build nested path for fields like "user.id"
+            Path<?> path = buildNestedPath(field);
 
-            switch (op) {
+            switch (operator) {
                 case EQ: return  Expressions.booleanTemplate("{0} = {1}", path, typeValue);
                 case NE: return  Expressions.booleanTemplate("{0} != {1}", path, typeValue);
                 case GT: return  Expressions.booleanTemplate("{0} > {1}", path, typeValue);
@@ -112,7 +116,7 @@ public class GenericPredicateBuilder<T> {
                     return Expressions.booleanTemplate("1=0");	// 잘못된 between
                 case IS_NULL : return  Expressions.booleanTemplate("{0} is null", path, "");
 
-                default: throw new IllegalArgumentException("Unsupported operator : " + op);
+                default: throw new IllegalArgumentException("Unsupported operator : " + operator);
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(" error : " + e);
@@ -183,7 +187,7 @@ public class GenericPredicateBuilder<T> {
                 LocalDate localDate = LocalDate.parse(str, DateTimeFormatter.ISO_LOCAL_DATE);
                 return (T) java.sql.Date.valueOf(localDate);
             } catch (Exception e) {
-                System.out.println("날짜 파싱 실패: " + str + " " + e);
+                log.error("날짜 파싱 실패: " + str + " " + e);
                 return null;
             }
         }
@@ -209,7 +213,7 @@ public class GenericPredicateBuilder<T> {
         List<OrderSpecifier<?>> orders = new ArrayList<>();
 
         for ( SortCondition sc : sortList ) {
-            Path<?> path = pathBuilder.get(sc.getField());
+            Path<?> path = buildNestedPath(sc.getField());
 
             Order order = (sc.getDirection() == SortCondition.SortDirection.DESC) ? Order.DESC : Order.ASC;
             orders.add(new OrderSpecifier(order, path));
@@ -217,6 +221,42 @@ public class GenericPredicateBuilder<T> {
 
         return orders;
 
+    }
+
+    /**
+     * Get field type, supporting nested fields like "user.id"
+     */
+    private Class<?> getFieldType(Class<?> clazz, String fieldPath) throws NoSuchFieldException {
+        if (!fieldPath.contains(".")) {
+            return clazz.getDeclaredField(fieldPath).getType();
+        }
+
+        String[] parts = fieldPath.split("\\.");
+        Class<?> currentType = clazz;
+
+        for (String part : parts) {
+            currentType = currentType.getDeclaredField(part).getType();
+        }
+
+        return currentType;
+    }
+
+    /**
+     * Build nested path for fields like "user.id"
+     */
+    private Path<?> buildNestedPath(String fieldPath) {
+        if (!fieldPath.contains(".")) {
+            return pathBuilder.get(fieldPath);
+        }
+
+        String[] parts = fieldPath.split("\\.");
+        Path<?> path = pathBuilder.get(parts[0]);
+
+        for (int i = 1; i < parts.length; i++) {
+            path = ((PathBuilder<?>) path).get(parts[i]);
+        }
+
+        return path;
     }
 
 }

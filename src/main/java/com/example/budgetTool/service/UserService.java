@@ -52,11 +52,17 @@ public class UserService implements UserDetailsService {
 
         User user = this.userRepository.getUser(fieldConditions, null);
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail()
-                , user.getPasswordHash()
-                , user.getAuthorities()
-        );
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getEmail()
+//                , user.getPasswordHash()
+//                , user.getAuthorities()
+//        );
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+
+        // Return User entity directly (it implements UserDetails)
+        return user;
     }
 
     /**

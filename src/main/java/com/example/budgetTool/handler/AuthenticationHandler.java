@@ -71,8 +71,15 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
         String email = authentication.getName();
         String rawPw = authentication.getCredentials().toString();
 
-        UserDetails userDetails = this.userService.loadUserByUsername(email);
-        String storedPw = userDetails.getPassword();
+        List<FieldCondition> fconds = new ArrayList<>();
+        fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+        User user = this.userService.getUser(fconds, null);
+
+        if (user == null) {
+            throw new BadCredentialsException("User not found");
+        }
+
+        String storedPw = user.getPasswordHash();
         log.info("Retrieved email, inputPw and storedPw for user. {}, {}, {}", email, rawPw, storedPw);
 
         boolean isSamePw = this.passwordEncoder.matches(rawPw, storedPw);
@@ -82,7 +89,7 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
         }
 
         log.info("Password matched with input data.");
-        return new UsernamePasswordAuthenticationToken(userDetails, storedPw, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user, storedPw, user.getAuthorities());
     }
 
     /**
@@ -105,13 +112,13 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response
             , Authentication authentication) throws IOException, ServletException {
-        if (!(authentication.getPrincipal() instanceof UserDetails)) {
+        if (!(authentication.getPrincipal() instanceof User)) {
             // This should not happen in a standard setup, but is a safe check.
-            throw new IllegalStateException("Authentication principal is not a UserDetails instance.");
+            throw new IllegalStateException("Authentication principal is not a User instance.");
         }
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
+        User user = (User) authentication.getPrincipal();
+        String email = user.getEmail();
 
         // access token
         String accessToken = JwtUtil.generateToken(email);

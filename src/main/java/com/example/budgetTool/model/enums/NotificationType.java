@@ -1,17 +1,60 @@
 package com.example.budgetTool.model.enums;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Getter;
 
+public enum NotificationType implements EnumCodeSupport {
+    TRANSACTION("TRANSACTION", "Notice related to transaction"),
+    SYSTEM("SYSTEM", "Notice related to system"),
+    PROMOTIONAL("PROMOTIONAL", "Notice related to promotion"),
+    SECURITY("SECURITY", "Notice related to security");
 
-@Getter
-@RequiredArgsConstructor
-public enum NotificationType {
-    TRANSACTION("거래", "거래 관련 알림"),
-    SYSTEM("시스템", "시스템 관련 알림"),
-    PROMOTIONAL("홍보", "마케팅 및 홍보 알림"),
-    SECURITY("보안", "보안 관련 알림");
+    private final String code;
+    private final String text;
 
-    private final String description;
-    private final String detail;
+    private NotificationType(String code, String text) {
+        this.code = code;
+        this.text = text;
+    }
+
+    public String getName() {
+        return this.name();
+    }
+
+    @Override
+    public String getCode() {
+        return this.code;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public static NotificationType codeOf(String code) {
+        if (code == null || "".equals(code)) return null;
+
+        NotificationType found = null;
+
+        for (NotificationType finding : NotificationType.values()) {
+            if (finding.code.equals(code)) {
+                found = finding;
+                break;
+            }
+        }
+
+        return found;
+    }
+
+    public static NotificationType textOf(String text) {
+        if (text == null || "".equals(text)) return null;
+
+        NotificationType found = null;
+
+        for (NotificationType finding : NotificationType.values()) {
+            if (finding.text.equals(text)) {
+                found = finding;
+                break;
+            }
+        }
+
+        return found;
+    }
 }

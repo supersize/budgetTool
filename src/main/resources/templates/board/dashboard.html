@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layout}">
 <head>
     <title>대시보드</title>
@@ -27,7 +29,7 @@
     <div class="welcome-section">
         <div class="welcome-card">
             <div class="welcome-content">
-                <h2>Hello, <span th:text="${session.user?.name} ?: 'John Doe'">John Doe</span>!</h2>
+                <h2>Hello, <span sec:authentication="principal.name">John Doe</span>!</h2>
                 <p>Start your smart financial management journey with FinanceTracker today.</p>
                 <div class="welcome-stats">
                     <div class="stat-item">

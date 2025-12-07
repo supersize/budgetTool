@@ -82,13 +82,13 @@ public class AccountService {
      */
     public List<Account> getAccountListByUserId(Long userId) {
         List<FieldCondition> fconds = List.of(
-                new FieldCondition("user.id", 
+                new FieldCondition("user.id",
                         Operator.EQ,
                         userId, 
                         LogicType.AND)
         );
         List<SortCondition> sconds = List.of(
-                new SortCondition("createdAt", SortCondition.SortDirection.DESC) // descending order
+                new SortCondition("createdAt", SortCondition.SortDirection.DESC)
         );
         return this.accountRepository.getAccountList(fconds, sconds);
     }

@@ -197,38 +197,62 @@ function hideLoading(button) {
 }
 
 function showAlert(message, type = 'info', duration = 5000) {
-    const alertId = 'alert-' + Date.now();
-    const alertTypes = {
-        'success': 'alert-success',
-        'danger': 'alert-danger',
-        'warning': 'alert-warning',
-        'info': 'alert-info'
+    const toastId = 'toast-' + Date.now();
+    
+    // Toast types and icons
+    const toastConfig = {
+        'success': {
+            bgClass: 'bg-success',
+            icon: 'bi-check-circle-fill',
+            iconColor: 'text-white'
+        },
+        'danger': {
+            bgClass: 'bg-danger',
+            icon: 'bi-exclamation-triangle-fill',
+            iconColor: 'text-white'
+        },
+        'warning': {
+            bgClass: 'bg-warning',
+            icon: 'bi-exclamation-triangle-fill',
+            iconColor: 'text-dark'
+        },
+        'info': {
+            bgClass: 'bg-info',
+            icon: 'bi-info-circle-fill',
+            iconColor: 'text-white'
+        }
     };
 
-    const alertClass = alertTypes[type] || alertTypes['info'];
-    const iconTypes = {
-        'success': 'bi-check-circle-fill',
-        'danger': 'bi-exclamation-triangle-fill',
-        'warning': 'bi-exclamation-triangle-fill',
-        'info': 'bi-info-circle-fill'
-    };
-    const iconClass = iconTypes[type] || iconTypes['info'];
+    const config = toastConfig[type] || toastConfig['info'];
 
-    const alertHtml = `
-        <div id="${alertId}" class="alert ${alertClass} alert-dismissible fade show position-fixed" 
-             style="top: 90px; right: 20px; z-index: 1050; min-width: 300px;">
-            <i class="bi ${iconClass} me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center ${config.bgClass} ${config.iconColor} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi ${config.icon} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     `;
 
-    $('body').append(alertHtml);
+    // Append to toast container
+    $('.toast-container').append(toastHtml);
 
-    // 자동 제거
-    setTimeout(() => {
-        $(`#${alertId}`).alert('close');
-    }, duration);
+    // Initialize and show toast
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: duration
+    });
+    
+    toast.show();
+
+    // Remove from DOM after hidden
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        $(this).remove();
+    });
 }
 
 function formatCurrency(amount) {
