@@ -1,5 +1,8 @@
 $(document).ready(function() {
-
+    // Load accounts when modals are opened
+    $('#depositModal, #withdrawModal, #transferModal').on('show.bs.modal', function() {
+        loadAccountsForTransactions();
+    });
 
     // 사이드바 토글 (모바일)
     $('#sidebarToggle').click(function() {
@@ -30,124 +33,29 @@ $(document).ready(function() {
 
     // 로그아웃 확인
     $('#confirmLogout').click(function() {
-        // 실제 구현시 서버에 로그아웃 요청
         logout();
     });
 
     // 입금 모달 처리
     $('#confirmDeposit').click(function() {
-        const account = $('#depositAccount').val();
-        const amount = $('#depositAmount').val();
-        const memo = $('#depositMemo').val();
-
-        if (!account) {
-            showAlert('계좌를 선택해주세요.', 'warning');
-            return;
-        }
-
-        if (!amount || amount <= 0) {
-            showAlert('올바른 금액을 입력해주세요.', 'warning');
-            return;
-        }
-
-        showLoading($(this));
-
-        // 실제 구현시 서버에 입금 요청
-        setTimeout(() => {
-            hideLoading($(this));
-            $('#depositModal').modal('hide');
-            showAlert('입금이 완료되었습니다.', 'success');
-
-            // 폼 초기화
-            $('#depositForm')[0].reset();
-
-            // 페이지 새로고침 또는 데이터 업데이트
-            location.reload();
-        }, 2000);
+        processDeposit();
     });
 
     // 출금 모달 처리
     $('#confirmWithdraw').click(function() {
-        const account = $('#withdrawAccount').val();
-        const amount = $('#withdrawAmount').val();
-        const memo = $('#withdrawMemo').val();
-
-        if (!account) {
-            showAlert('계좌를 선택해주세요.', 'warning');
-            return;
-        }
-
-        if (!amount || amount <= 0) {
-            showAlert('올바른 금액을 입력해주세요.', 'warning');
-            return;
-        }
-
-        showLoading($(this));
-
-        // 실제 구현시 서버에 출금 요청
-        setTimeout(() => {
-            hideLoading($(this));
-            $('#withdrawModal').modal('hide');
-            showAlert('출금이 완료되었습니다.', 'success');
-
-            // 폼 초기화
-            $('#withdrawForm')[0].reset();
-
-            // 페이지 새로고침 또는 데이터 업데이트
-            location.reload();
-        }, 2000);
+        processWithdrawal();
     });
 
     // 송금 모달 처리
     $('#confirmTransfer').click(function() {
-        const fromAccount = $('#transferFromAccount').val();
-        const toAccount = $('#transferToAccount').val();
-        const toName = $('#transferToName').val();
-        const amount = $('#transferAmount').val();
-        const memo = $('#transferMemo').val();
-
-        if (!fromAccount) {
-            showAlert('출금 계좌를 선택해주세요.', 'warning');
-            return;
-        }
-
-        if (!toAccount) {
-            showAlert('받는 계좌번호를 입력해주세요.', 'warning');
-            return;
-        }
-
-        if (!toName) {
-            showAlert('받는 분의 이름을 입력해주세요.', 'warning');
-            return;
-        }
-
-        if (!amount || amount <= 0) {
-            showAlert('올바른 금액을 입력해주세요.', 'warning');
-            return;
-        }
-
-        showLoading($(this));
-
-        // 실제 구현시 서버에 송금 요청
-        setTimeout(() => {
-            hideLoading($(this));
-            $('#transferModal').modal('hide');
-            showAlert(`${toName}님께 ${formatCurrency(amount)}원이 송금되었습니다.`, 'success');
-
-            // 폼 초기화
-            $('#transferForm')[0].reset();
-
-            // 페이지 새로고침 또는 데이터 업데이트
-            location.reload();
-        }, 2000);
+        processTransfer();
     });
 
     // 금액 입력 필드 포맷팅
     $('input[type="number"]').on('input', function() {
         const value = $(this).val();
         if (value) {
-            // 숫자만 허용
-            const numericValue = value.replace(/[^0-9]/g, '');
+            const numericValue = value.replace(/[^0-9.]/g, '');
             $(this).val(numericValue);
         }
     });
@@ -155,14 +63,11 @@ $(document).ready(function() {
     // 계좌번호 입력 포맷팅
     $('#transferToAccount').on('input', function() {
         let value = $(this).val().replace(/[^0-9]/g, '');
-
-        // 계좌번호 자동 하이픈 추가 (예: 123-456-789012)
         if (value.length > 3 && value.length <= 6) {
             value = value.substring(0, 3) + '-' + value.substring(3);
         } else if (value.length > 6) {
             value = value.substring(0, 3) + '-' + value.substring(3, 6) + '-' + value.substring(6, 12);
         }
-
         $(this).val(value);
     });
 
@@ -179,6 +84,230 @@ $(document).ready(function() {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
+
+// Load Accounts for Transaction Modals
+function loadAccountsForTransactions() {
+    fetch(ctxPath + 'Accounts', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            populateAccountSelects(data.data);
+        }
+    })
+    .catch(error => {
+        console.error('Error loading accounts:', error);
+    });
+}
+
+// Populate Account Select Dropdowns
+function populateAccountSelects(accounts) {
+    const $depositAccount = $('#depositAccount');
+    const $withdrawAccount = $('#withdrawAccount');
+    const $transferFromAccount = $('#transferFromAccount');
+
+    // Clear existing options except the first one
+    $depositAccount.find('option:not(:first)').remove();
+    $withdrawAccount.find('option:not(:first)').remove();
+    $transferFromAccount.find('option:not(:first)').remove();
+
+    // Populate with actual accounts
+    accounts.forEach(account => {
+        const currencySymbol = getCurrencySymbol(account.currency);
+        const optionText = `${account.bankName} - ${account.accountNumber} (${currencySymbol}${parseFloat(account.balance).toFixed(2)})`;
+        const option = `<option value="${account.id}" data-currency="${account.currency}">${optionText}</option>`;
+        
+        if (account.isActive) {
+            $depositAccount.append(option);
+            $withdrawAccount.append(option);
+            $transferFromAccount.append(option);
+        }
+    });
+}
+
+// Process Deposit
+function processDeposit() {
+    const accountId = $('#depositAccount').val();
+    const amount = $('#depositAmount').val();
+    const description = $('#depositMemo').val();
+
+    if (!accountId) {
+        showAlert('Please select an account', 'warning');
+        return;
+    }
+
+    if (!amount || parseFloat(amount) <= 0) {
+        showAlert('Please enter a valid amount', 'warning');
+        return;
+    }
+
+    const $button = $('#confirmDeposit');
+    showLoading($button);
+
+    const requestData = {
+        accountId: parseInt(accountId),
+        amount: parseFloat(amount),
+        description: description || 'Deposit'
+    };
+
+    fetch(ctxPath + 'Transactions/deposit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading($button);
+        if (data.success) {
+            $('#depositModal').modal('hide');
+            showAlert('Deposit completed successfully!', 'success');
+            
+            // Reload page after 1 second
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showAlert(data.message || 'Failed to process deposit', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error processing deposit:', error);
+        hideLoading($button);
+        showAlert('Failed to process deposit. Please try again.', 'danger');
+    });
+}
+
+// Process Withdrawal
+function processWithdrawal() {
+    const accountId = $('#withdrawAccount').val();
+    const amount = $('#withdrawAmount').val();
+    const description = $('#withdrawMemo').val();
+
+    if (!accountId) {
+        showAlert('Please select an account', 'warning');
+        return;
+    }
+
+    if (!amount || parseFloat(amount) <= 0) {
+        showAlert('Please enter a valid amount', 'warning');
+        return;
+    }
+
+    const $button = $('#confirmWithdraw');
+    showLoading($button);
+
+    const requestData = {
+        accountId: parseInt(accountId),
+        amount: parseFloat(amount),
+        description: description || 'Withdrawal'
+    };
+
+    fetch(ctxPath + 'Transactions/withdraw', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading($button);
+        if (data.success) {
+            $('#withdrawModal').modal('hide');
+            showAlert('Withdrawal completed successfully!', 'success');
+            
+            // Reload page after 1 second
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showAlert(data.message || 'Failed to process withdrawal', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error processing withdrawal:', error);
+        hideLoading($button);
+        showAlert('Failed to process withdrawal. Please try again.', 'danger');
+    });
+}
+
+// Process Transfer
+function processTransfer() {
+    const fromAccountId = $('#transferFromAccount').val();
+    let toAccountNumber = $('#transferToAccount').val();
+    let result = toAccountNumber.split("-")
+    toAccountNumber = '';
+    for(var item of result)
+       toAccountNumber += item;
+    const toAccountHolderName = $('#transferToName').val();
+    const amount = $('#transferAmount').val();
+    const transferMessage = $('#transferMemo').val();
+
+    if (!fromAccountId) {
+        showAlert('Please select a source account', 'warning');
+        return;
+    }
+
+    if (!toAccountNumber) {
+        showAlert('Please enter recipient account number', 'warning');
+        return;
+    }
+
+    if (!toAccountHolderName) {
+        showAlert('Please enter recipient name', 'warning');
+        return;
+    }
+
+    if (!amount || parseFloat(amount) <= 0) {
+        showAlert('Please enter a valid amount', 'warning');
+        return;
+    }
+
+    const $button = $('#confirmTransfer');
+    showLoading($button);
+
+    const requestData = {
+        fromAccountId: parseInt(fromAccountId),
+        toAccountNumber: toAccountNumber,
+        toAccountHolderName: toAccountHolderName,
+        amount: parseFloat(amount),
+        transferMessage: transferMessage || ''
+    };
+
+    fetch(ctxPath + 'Transactions/transfer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading($button);
+        if (data.success) {
+            $('#transferModal').modal('hide');
+            showAlert(`Transfer to ${toAccountHolderName} completed successfully!`, 'success');
+            
+            // Reload page after 1 second
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showAlert(data.message || 'Failed to process transfer', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error processing transfer:', error);
+        hideLoading($button);
+        showAlert('Failed to process transfer. Please try again.', 'danger');
+    });
+}
 
 // 유틸리티 함수들
 function showLoading(button) {
@@ -259,6 +388,16 @@ function formatCurrency(amount) {
     return parseInt(amount).toLocaleString('ko-KR');
 }
 
+function getCurrencySymbol(currency) {
+    const symbols = {
+        'GBP': '£',
+        'USD': '$',
+        'EUR': '€',
+        'KRW': '₩'
+    };
+    return symbols[currency] || currency;
+}
+
 function logout() {
     showAlert('signing out...', 'info', 2000);
     fetch(ctxPath + "logout", {
@@ -269,7 +408,7 @@ function logout() {
             console.log("here is logout.")
             console.log(data)
 
-            location.href = ctxPath + 'login'
+            location.href = ctxPath + 'auth/login'
         })
         .catch(error => console.error('logout failed. : ', error))
 

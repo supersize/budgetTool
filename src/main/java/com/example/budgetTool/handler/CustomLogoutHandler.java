@@ -55,10 +55,10 @@ public class CustomLogoutHandler implements LogoutSuccessHandler {
         String email = JwtUtil.getUserEmail(token);
 
         String accessToken = this.redisService.getSingleData(ACCESS_TOKEN_PRIFIX + email);
-        String refreshToken = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + email);
+//        String refreshToken = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + email);
 
         this.redisService.deleteSingleData(accessToken);
-        this.redisService.deleteSingleData(refreshToken);
+//        this.redisService.deleteSingleData(refreshToken);
 
         // Delete cookies on user's browser
         Cookie jwtCookie = new Cookie("accessToken", null); // 값은 null

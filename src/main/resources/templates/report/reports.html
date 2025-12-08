@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layout}">
+<head>
+    <title>Reports</title>
+    <th:block layout:fragment="styles">
+        <link th:href="@{/css/report/reports.css}" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+<!-- Page Header -->
+<th:block layout:fragment="page-header">
+    <h1 layout:fragment="page-title">
+        <i class="bi bi-bar-chart me-2"></i>Financial Reports
+    </h1>
+    <div layout:fragment="page-actions" class="page-actions">
+        <button class="btn btn-outline-secondary" id="refreshBtn">
+            <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+        </button>
+    </div>
+</th:block>
+
+<!-- Page Content -->
+<div layout:fragment="content">
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading reports...</p>
+    </div>
+
+    <!-- Report Content -->
+    <div id="reportContent" style="display: none;">
+        <!-- Summary Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="summary-card income">
+                    <div class="summary-icon">
+                        <i class="bi bi-arrow-down-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-label">Total Income</div>
+                        <div class="summary-value" id="totalIncome">£0.00</div>
+                        <small class="text-muted">This month</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="summary-card expense">
+                    <div class="summary-icon">
+                        <i class="bi bi-arrow-up-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-label">Total Expense</div>
+                        <div class="summary-value" id="totalExpense">£0.00</div>
+                        <small class="text-muted">This month</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="summary-card net">
+                    <div class="summary-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-label">Net Amount</div>
+                        <div class="summary-value" id="netAmount">£0.00</div>
+                        <small class="text-muted">This month</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="summary-card transactions">
+                    <div class="summary-icon">
+                        <i class="bi bi-list-ul"></i>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-label">Transactions</div>
+                        <div class="summary-value" id="totalTransactions">0</div>
+                        <small class="text-muted">This month</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up me-2"></i>Income vs Expense Trend
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="incomeExpenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart me-2"></i>Transaction Types
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="transactionTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bank me-2"></i>Account Balances
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="accountBalanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-data me-2"></i>Transaction Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th class="text-end">Amount</th>
+                                        <th class="text-end">Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionSummaryTable">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Scripts -->
+<th:block layout:fragment="scripts">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script th:src="@{/js/report/reports.js}"></script>
+</th:block>
+</body>
+</html>

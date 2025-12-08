@@ -1,0 +1,149 @@
+/* Settings Page Styles */
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+/* Settings Navigation */
+.settings-nav {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    position: sticky;
+    top: 20px;
+}
+
+.settings-nav .list-group-item {
+    border: none;
+    padding: 1rem 1.5rem;
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.settings-nav .list-group-item:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.settings-nav .list-group-item:last-child {
+    border-radius: 0 0 12px 12px;
+}
+
+.settings-nav .list-group-item:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.settings-nav .list-group-item.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.settings-nav .list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Settings Content */
+.settings-tab {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-control:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* Info Rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+/* Buttons */
+.btn-primary {
+    padding: 0.625rem 1.5rem;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-nav {
+        position: relative;
+        top: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .settings-nav .list-group-item {
+        padding: 0.75rem 1rem;
+    }
+}

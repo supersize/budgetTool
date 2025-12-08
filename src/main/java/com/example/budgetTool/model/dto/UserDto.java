@@ -114,4 +114,25 @@ public record UserDto(
     public record verification(
             String email, String newPassword, String resetToken
     ) {}
+
+    /**
+     * Update User Profile Request
+     */
+    public record UpdateRequest(
+            String firstName,
+            String lastName,
+            String phoneNumber,
+            LocalDate dateOfBirth,
+            String occupation,
+            String incomeRange
+    ) {}
+
+    /**
+     * Change Password Request
+     */
+    public record ChangePasswordRequest(
+            String currentPassword,
+            String newPassword,
+            String confirmPassword
+    ) {}
 }

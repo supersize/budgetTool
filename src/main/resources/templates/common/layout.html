@@ -35,7 +35,7 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <!-- Left Logo -->
-      <a class="navbar-brand" th:href="@{/dashboard}">
+      <a class="navbar-brand" th:href="@{/main}">
         <i class="bi bi-graph-up-arrow"></i>
         <span>FinanceTracker</span>
       </a>
@@ -47,7 +47,7 @@
 
       <!-- Right Menu -->
       <div class="navbar-nav ms-auto">
-        <!-- Notifications -->
+        <!-- Notifications
         <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,6 +80,7 @@
             <li><a class="dropdown-item text-center" href="#">View All Notifications</a></li>
           </ul>
         </div>
+        -->
 
         <!-- User Menu -->
         <div class="nav-item dropdown">
@@ -93,15 +94,19 @@
           <ul class="dropdown-menu dropdown-menu-end user-dropdown">
             <li><h6 class="dropdown-header" sec:authentication="principal.email">user@example.com</h6></li>
             <li><hr class="dropdown-divider"></li>
+            <!--
             <li><a class="dropdown-item" th:href="@{/profile}">
               <i class="bi bi-person me-2"></i>My Profile
             </a></li>
-            <li><a class="dropdown-item" href="#">
+            -->
+            <li><a class="dropdown-item" th:href="@{/settings}">
               <i class="bi bi-gear me-2"></i>Settings
             </a></li>
+            <!--
             <li><a class="dropdown-item" href="#">
               <i class="bi bi-question-circle me-2"></i>Help
             </a></li>
+            -->
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">
               <i class="bi bi-box-arrow-right me-2"></i>Logout
@@ -134,7 +139,7 @@
       <nav class="sidebar-nav">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/dashboard}" th:classappend="${currentPath == '/dashboard'} ? 'active'">
+            <a class="nav-link" th:href="@{/main}" th:classappend="${currentPath == '/main'} ? 'active'">
               <i class="bi bi-house-door"></i>
               <span>Dashboard</span>
             </a>
@@ -244,13 +249,7 @@
           </div>
           <div class="mb-3">
             <label for="depositAmount" class="form-label">Deposit Amount</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="depositAmount" placeholder="0" required>
-              <select class="form-select" style="max-width: 80px;">
-                <option value="GBP">£</option>
-                <option value="SGD">S$</option>
-              </select>
-            </div>
+            <input type="number" class="form-control" id="depositAmount" placeholder="0" step="0.01" min="0" required>
           </div>
           <div class="mb-3">
             <label for="depositMemo" class="form-label">Memo (Optional)</label>
@@ -289,13 +288,7 @@
           </div>
           <div class="mb-3">
             <label for="withdrawAmount" class="form-label">Withdraw Amount</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="withdrawAmount" placeholder="0" required>
-              <select class="form-select" style="max-width: 80px;">
-                <option value="GBP">£</option>
-                <option value="SGD">S$</option>
-              </select>
-            </div>
+            <input type="number" class="form-control" id="withdrawAmount" placeholder="0" step="0.01" min="0" required>
           </div>
           <div class="mb-3">
             <label for="withdrawMemo" class="form-label">Memo (Optional)</label>
@@ -342,13 +335,7 @@
           </div>
           <div class="mb-3">
             <label for="transferAmount" class="form-label">Transfer Amount</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="transferAmount" placeholder="0" required>
-              <select class="form-select" style="max-width: 80px;">
-                <option value="GBP">£</option>
-                <option value="SGD">S$</option>
-              </select>
-            </div>
+            <input type="number" class="form-control" id="transferAmount" placeholder="0" step="0.01" min="0" required>
           </div>
           <div class="mb-3">
             <label for="transferMemo" class="form-label">Transfer Message (Optional)</label>

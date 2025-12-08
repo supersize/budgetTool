@@ -121,6 +121,50 @@ public class UserService implements UserDetailsService {
         return updatedUser;
     }
 
+    /**
+     * Update user profile information
+     * @param user User entity
+     * @param updateRequest Update request DTO
+     * @return Updated user
+     */
+    public User updateUserProfile(User user, UserDto.UpdateRequest updateRequest) {
+        if (user == null || updateRequest == null) {
+            throw new IllegalArgumentException("User and update request cannot be null");
+        }
+
+        // Update user fields
+        user.setFirstName(updateRequest.firstName());
+        user.setLastName(updateRequest.lastName());
+        user.setPhoneNumber(updateRequest.phoneNumber());
+        user.setDateOfBirth(updateRequest.dateOfBirth());
+        user.setOccupation(updateRequest.occupation());
+        user.setIncomeRange(updateRequest.incomeRange());
+
+        return this.userRepository.save(user);
+    }
+
+    /**
+     * Change user password
+     * @param user User entity
+     * @param currentPassword Current password
+     * @param newPassword New password
+     * @return Updated user
+     */
+    public User changePassword(User user, String currentPassword, String newPassword) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        return this.userRepository.save(user);
+    }
+
 
     /*
     exist

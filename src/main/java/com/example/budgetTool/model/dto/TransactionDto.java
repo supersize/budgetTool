@@ -1,17 +1,27 @@
 package com.example.budgetTool.model.dto;
 
+import com.example.budgetTool.model.entity.Transaction;
 import com.example.budgetTool.model.enums.TransactionStatus;
 import com.example.budgetTool.model.enums.TransactionType;
-import com.example.budgetTool.model.entity.Account;
-import com.example.budgetTool.model.entity.Transaction;
-import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * packageName    : com.example.budgetTool.model.dto
+ * author         : kimjaehyeong
+ * date           : 12/07/25
+ * description    : Transaction DTO
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 12/07/25        kimjaehyeong       created
+ */
 public record TransactionDto(
         Long id,
-        AccountDto account,
+        Long accountId,
+        String accountNumber,
+        String bankName,
         TransactionType transactionType,
         BigDecimal amount,
         String currency,
@@ -27,49 +37,35 @@ public record TransactionDto(
         LocalDateTime createdAt,
         LocalDateTime processedAt
 ) {
-
-    @Builder
-    public TransactionDto {}
-
     public static TransactionDto from(Transaction transaction) {
-        return TransactionDto.builder()
-                .id(transaction.getId())
-                .account(AccountDto.from(transaction.getAccount()))
-                .transactionType(transaction.getTransactionType())
-                .amount(transaction.getAmount())
-                .currency(transaction.getCurrency())
-                .description(transaction.getDescription())
-                .referenceNumber(transaction.getReferenceNumber())
-                .toAccountNumber(transaction.getToAccountNumber())
-                .toAccountHolderName(transaction.getToAccountHolderName())
-                .fromAccountNumber(transaction.getFromAccountNumber())
-                .fromAccountHolderName(transaction.getFromAccountHolderName())
-                .transferMessage(transaction.getTransferMessage())
-                .status(transaction.getStatus())
-                .balanceAfter(transaction.getBalanceAfter())
-                .createdAt(transaction.getCreatedAt())
-                .processedAt(transaction.getProcessedAt())
-                .build();
-    }
-
-    public record Request(
-            Long accountId,
-            TransactionType transactionType,
-            BigDecimal amount,
-            String currency,
-            String description,
-            String toAccountNumber,
-            String toAccountHolderName,
-            String transferMessage
-    ) {
-        public Transaction toEntity(Account account, String referenceNumber) {
-            return Transaction.of(account, transactionType, amount, currency, description, referenceNumber);
-        }
+        return new TransactionDto(
+                transaction.getId(),
+                transaction.getAccount().getId(),
+                transaction.getAccount().getAccountNumber(),
+                transaction.getAccount().getBankName(),
+                transaction.getTransactionType(),
+                transaction.getAmount(),
+                transaction.getCurrency(),
+                transaction.getDescription(),
+                transaction.getReferenceNumber(),
+                transaction.getToAccountNumber(),
+                transaction.getToAccountHolderName(),
+                transaction.getFromAccountNumber(),
+                transaction.getFromAccountHolderName(),
+                transaction.getTransferMessage(),
+                transaction.getStatus(),
+                transaction.getBalanceAfter(),
+                transaction.getCreatedAt(),
+                transaction.getProcessedAt()
+        );
     }
 
     public record Response(
             Long id,
-            TransactionType transactionType,
+            Long accountId,
+            String accountNumber,
+            String bankName,
+            String transactionType,
             BigDecimal amount,
             String currency,
             String description,
@@ -79,7 +75,7 @@ public record TransactionDto(
             String fromAccountNumber,
             String fromAccountHolderName,
             String transferMessage,
-            TransactionStatus status,
+            String status,
             BigDecimal balanceAfter,
             LocalDateTime createdAt,
             LocalDateTime processedAt
@@ -87,7 +83,10 @@ public record TransactionDto(
         public static Response from(TransactionDto dto) {
             return new Response(
                     dto.id(),
-                    dto.transactionType(),
+                    dto.accountId(),
+                    dto.accountNumber(),
+                    dto.bankName(),
+                    dto.transactionType().getCode(),
                     dto.amount(),
                     dto.currency(),
                     dto.description(),
@@ -97,7 +96,7 @@ public record TransactionDto(
                     dto.fromAccountNumber(),
                     dto.fromAccountHolderName(),
                     dto.transferMessage(),
-                    dto.status(),
+                    dto.status().getCode(),
                     dto.balanceAfter(),
                     dto.createdAt(),
                     dto.processedAt()
@@ -105,25 +104,34 @@ public record TransactionDto(
         }
     }
 
-    public record Summary(
-            Long id,
-            TransactionType transactionType,
+    /**
+     * Deposit Request DTO
+     */
+    public record DepositRequest(
+            Long accountId,
             BigDecimal amount,
-            String currency,
-            String description,
-            TransactionStatus status,
-            LocalDateTime createdAt
-    ) {
-        public static Summary from(TransactionDto dto) {
-            return new Summary(
-                    dto.id(),
-                    dto.transactionType(),
-                    dto.amount(),
-                    dto.currency(),
-                    dto.description(),
-                    dto.status(),
-                    dto.createdAt()
-            );
-        }
-    }
+            String description
+    ) {}
+
+    /**
+     * Withdrawal Request DTO
+     */
+    public record WithdrawalRequest(
+            Long accountId,
+            BigDecimal amount,
+
+            String description
+    ) {}
+
+    /**
+     * Transfer Request DTO
+     */
+    public record TransferRequest(
+            Long fromAccountId,
+            String toAccountNumber,
+            String toAccountHolderName,
+            BigDecimal amount,
+
+            String transferMessage
+    ) {}
 }

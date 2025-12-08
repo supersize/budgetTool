@@ -2,7 +2,6 @@ package com.example.budgetTool.repository.custom;
 
 import static com.example.budgetTool.model.entity.QUser.user;
 
-import com.example.budgetTool.model.entity.QUser;
 import com.example.budgetTool.model.entity.User;
 import com.example.budgetTool.utils.querydsl.FieldCondition;
 import com.example.budgetTool.utils.querydsl.QuerydslUtil;
