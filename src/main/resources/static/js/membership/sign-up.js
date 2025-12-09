@@ -564,42 +564,8 @@ $(document).ready(function() {
         });
     }
 
-    /*
-    function resendVerificationEmail(userData) {
-        return new Promise((resolve, reject) => {
-            const data = new URLSearchParams();
-            data.append("email", userData.email)
-
-            fetch(ctxPath + "Auth/send-verification", {
-                method: "post"
-                , headers: { 'Content-Type' : 'application/x-www-form-urlencoded'}
-                , body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    throw new Error(data.message)
-                    return reject(data)
-                }
-
-                if (data.data)
-                    return reject(null)
-
-                resolve();
-            })
-            .catch(error => console.error('Resending verification is failed : ', error))
-            .finally(() => hideLoading($(this)))
-        });
-    }
-    */
-
     function completeRegistration(userData) {
         return new Promise((resolve, reject) => {
-            // const data = new URLSearchParams();
-            // data.append("email", userData.email)
-            // data.append("user", userData)
-            // data.append("otp", otp)
-
             fetch(ctxPath + "Auth/confirm-verification-code", {
                 method: "post"
                 , headers: { 'Content-Type' : 'application/json'}

@@ -9,6 +9,20 @@ $(document).ready(function() {
     function init() {
         loadAccounts();
         initializeEventListeners();
+        
+        // Check if we should auto-open the add modal
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'add') {
+            // Open the modal after a short delay to ensure page is loaded
+            setTimeout(() => {
+                const modal = new bootstrap.Modal(document.getElementById('addAccountModal'));
+                modal.show();
+                
+                // Clean up URL without reloading
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            }, 300);
+        }
     }
 
     // Initialize Event Listeners
@@ -224,8 +238,8 @@ $(document).ready(function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Close modal
-                $('#addAccountModal').modal('hide');
+                // Close modal properly
+                closeModalProperly('addAccountModal');
                 
                 // Reload accounts
                 loadAccounts();
@@ -291,8 +305,8 @@ $(document).ready(function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Close modal
-                $('#editAccountModal').modal('hide');
+                // Close modal properly
+                closeModalProperly('editAccountModal');
                 
                 // Reload accounts
                 loadAccounts();
@@ -332,8 +346,8 @@ $(document).ready(function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Close modal
-                $('#deleteAccountModal').modal('hide');
+                // Close modal properly
+                closeModalProperly('deleteAccountModal');
                 
                 // Reload accounts
                 loadAccounts();
@@ -353,6 +367,25 @@ $(document).ready(function() {
     }
 
     // Utility Functions
+    function closeModalProperly(modalId) {
+        // Get modal instance
+        const modalElement = document.getElementById(modalId);
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        
+        // Hide modal
+        if (modal) {
+            modal.hide();
+        }
+        
+        // Force remove backdrop
+        setTimeout(() => {
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+            $('body').css('overflow', '');
+            $('body').css('padding-right', '');
+        }, 100);
+    }
+
     function showLoading() {
         $('#loadingState').css('display', 'flex');
         $('#emptyState').hide();
