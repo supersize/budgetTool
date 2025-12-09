@@ -307,7 +307,8 @@ $(document).ready(function() {
             showError('passwordError', 'Password is required.');
             isValid = false;
         } else if (!isPasswordStrong(password)) {
-            showError('passwordError', 'Password must be at least 8 characters with uppercase, lowercase, and numbers.');
+            showError('passwordError'
+                , 'Password must be at least 8 characters with uppercase, lowercase, special, and numbers.');
             isValid = false;
         }
 
@@ -399,8 +400,9 @@ $(document).ready(function() {
         else feedback.push('number');
 
         if (patterns.password.special.test(password)) score++;
+        else feedback.push('special');
 
-        const levels = ['weak', 'fair', 'good', 'strong', 'strong'];
+        const levels = ['weak', 'fair', 'good', , 'good', 'strong', 'strong'];
         const level = levels[score] || 'weak';
 
         strengthContainer
@@ -414,7 +416,9 @@ $(document).ready(function() {
         return patterns.password.minLength.test(password) &&
             patterns.password.uppercase.test(password) &&
             patterns.password.lowercase.test(password) &&
+            patterns.password.special.test(password) &&
             patterns.password.number.test(password);
+
     }
 
     // 사용자 데이터 수집
@@ -540,18 +544,11 @@ $(document).ready(function() {
 
     function sendVerificationEmail(userData) {
         return new Promise((resolve, reject) => {
-            // 실제 구현시 AJAX 호출
-            setTimeout(() => {
-                resolve();
-            }, 1500);
-
-            const data = new URLSearchParams();
-            data.append("email", userData.email)
-
             fetch(ctxPath + "Auth/send-verification", {
                 method: 'post'
                 , headers: { 'Content-Type' : 'application/json'}
-                , body: data
+                // , body: data
+                , body: JSON.stringify(userData)
             })
             .then(response => response.json())
             .then(data => {

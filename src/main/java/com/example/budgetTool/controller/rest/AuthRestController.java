@@ -121,13 +121,15 @@ public class AuthRestController {
         ApiResponse<String> res = new ApiResponse<>();
         try {
             String email = userRequest.email();
-            // Check if email exists
-            List<FieldCondition> fconds = new ArrayList<>();
-            fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+            if(email.isBlank() || email.isEmpty()) throw new IllegalArgumentException("Email can't be null or empty");
 
-            if (!this.userService.exist(fconds)) {
-                return ApiResponse.ERROR("Email not found in our system.");
-            }
+            // Check if email exists
+//            List<FieldCondition> fconds = new ArrayList<>();
+//            fconds.add(new FieldCondition("email", Operator.EQ, email, LogicType.AND));
+//
+//            if (!this.userService.exist(fconds)) {
+//                return ApiResponse.ERROR("Email not found in our system.");
+//            }
 
             // sending verification digit ex) 123456
             int randomNum = ((int)(Math.random() * 1000000));
