@@ -33,6 +33,7 @@ $(document).ready(function() {
                     console.log(errorMsg)
                     hideLoading($(this));
                     showError('emailError', errorMsg || 'Email is already registered.');
+                    // showError('emailError', 'Email is already registered.');
                 });
         }
     });
@@ -535,32 +536,6 @@ $(document).ready(function() {
                     reject(error.message)
                 })
         })
-
-
-        // return new Promise((resolve, reject) => {
-        //     // 실제 구현시 AJAX 호출
-        //     setTimeout(() => {
-        //         // 임시로 일부 이메일을 중복으로 처리
-        //         if (email === 'test@example.com') {
-        //             reject(new Error('This email is already registered.'));
-        //         } else {
-        //             resolve();
-        //         }
-        //     }, 1000);
-        //
-        //     /* 실제 구현시 사용할 코드
-        //     $.ajax({
-        //         url: '/api/auth/check-email',
-        //         method: 'POST',
-        //         contentType: 'application/json',
-        //         data: JSON.stringify({ email: email }),
-        //         headers: {
-        //             'X-Requested-With': 'XMLHttpRequest',
-        //             [csrfHeader]: csrfToken
-        //         }
-        //     }).done(resolve).fail(reject);
-        //     */
-        // });
     }
 
     function sendVerificationEmail(userData) {
@@ -575,7 +550,7 @@ $(document).ready(function() {
 
             fetch(ctxPath + "Auth/send-verification", {
                 method: 'post'
-                , headers: { 'Content-Type' : 'application/x-www-form-urlencoded'}
+                , headers: { 'Content-Type' : 'application/json'}
                 , body: data
             })
             .then(response => response.json())
