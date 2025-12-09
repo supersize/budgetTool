@@ -70,7 +70,7 @@ public class User implements UserDetails {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    @Column(name = "salt", nullable = false)
+    @Column(name = "salt", nullable = true)
     private String salt;
 
     @Transient

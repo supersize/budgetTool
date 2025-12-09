@@ -34,11 +34,11 @@
                 <div class="welcome-stats">
                     <div class="stat-item">
                         <i class="bi bi-credit-card"></i>
-                        <span>Total Accounts: <strong>3</strong></span>
+                        <span>Total Accounts: <strong th:text="${totalAccounts} ?: 0">0</strong></span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item" th:if="${monthlyGrowth != null}">
                         <i class="bi bi-graph-up"></i>
-                        <span>This Month's Growth: <strong>+2.3%</strong></span>
+                        <span>This Month's Growth: <strong th:text="${monthlyGrowth}">+0%</strong></span>
                     </div>
                 </div>
             </div>
@@ -61,44 +61,45 @@
                     </a>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row g-3">
+                                    <!-- When accounts exist -->
+                                    <div class="row g-3" th:if="${accounts != null and !accounts.isEmpty()}">
                                         <!-- Total Balance -->
                                         <div class="col-md-4">
                                             <div class="balance-summary">
                                                 <div class="balance-label">Total Balance</div>
-                                                <div class="balance-amount text-primary">£23,500</div>
-                                <div class="balance-change text-success">
-                                    <i class="bi bi-arrow-up"></i> +£1,500 (this month)
-                                </div>
+                                                <div class="balance-amount text-primary" th:text="${totalBalance}">£0</div>
+                                                <div class="balance-change" th:classappend="${monthlyChange >= 0} ? 'text-success' : 'text-danger'" th:if="${monthlyChange != null}">
+                                                    <i class="bi" th:classappend="${monthlyChange >= 0} ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+                                                    <span th:text="${monthlyChangeText}">+£0 (this month)</span>
+                                                </div>
                             </div>
                         </div>
 
                         <!-- Account Breakdown -->
                         <div class="col-md-8">
                             <div class="accounts-grid">
-                                <div class="account-item">
+                                <div class="account-item" th:each="account : ${accounts}">
                                     <div class="account-info">
-                                        <div class="account-bank">DBS Bank</div>
-                                        <div class="account-number">***1234</div>
-                                        <div class="account-balance">£15,000</div>
+                                        <div class="account-bank" th:text="${account.bankName}">Bank Name</div>
+                                        <div class="account-number" th:text="'***' + ${account.accountNumberLast4}">***0000</div>
+                                        <div class="account-balance" th:text="${account.formattedBalance}">£0</div>
                                     </div>
                                     <div class="account-chart">
-                                        <div class="chart-bar" style="height: 70%;"></div>
-                                    </div>
-                                </div>
-
-                                <div class="account-item">
-                                    <div class="account-info">
-                                        <div class="account-bank">Barclays</div>
-                                        <div class="account-number">***5678</div>
-                                        <div class="account-balance">£8,500</div>
-                                    </div>
-                                    <div class="account-chart">
-                                        <div class="chart-bar" style="height: 40%;"></div>
+                                        <div class="chart-bar" th:style="'height: ' + ${account.balancePercentage} + '%;'"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    
+                    <!-- When no accounts exist -->
+                    <div class="text-center py-5" th:if="${accounts == null or accounts.isEmpty()}">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #dee2e6;"></i>
+                        <h5 class="mt-3 text-muted">No Accounts Found</h5>
+                        <p class="text-muted mb-4">You haven't added any accounts yet. Start by adding your first account!</p>
+                        <a th:href="@{/accounts/add}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add Your First Account
+                        </a>
                     </div>
                 </div>
             </div>
@@ -163,76 +164,31 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <div class="transactions-list">
-                        <div class="transaction-item">
-                            <div class="transaction-icon bg-success">
-                                <i class="bi bi-arrow-down-left"></i>
+                    <!-- When transactions exist -->
+                    <div class="transactions-list" th:if="${recentTransactions != null and !recentTransactions.isEmpty()}">
+                        <div class="transaction-item" th:each="transaction : ${recentTransactions}">
+                            <div class="transaction-icon" th:classappend="${transaction.typeClass}">
+                                <i class="bi" th:classappend="${transaction.iconClass}"></i>
                             </div>
                             <div class="transaction-details">
-                                <div class="transaction-title">Salary Deposit</div>
-                                <div class="transaction-account">DBS Bank ***1234</div>
-                                <div class="transaction-time">2024-01-15 09:30</div>
+                                <div class="transaction-title" th:text="${transaction.description}">Transaction</div>
+                                <div class="transaction-account" th:text="${transaction.accountInfo}">Account</div>
+                                <div class="transaction-time" th:text="${transaction.formattedDateTime}">Date Time</div>
                             </div>
-                            <div class="transaction-amount text-success">
-                                +£5,000
-                            </div>
-                        </div>
-
-                        <div class="transaction-item">
-                            <div class="transaction-icon bg-primary">
-                                <i class="bi bi-arrow-right"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Transfer to Sarah Wilson</div>
-                                <div class="transaction-account">Barclays ***5678</div>
-                                <div class="transaction-time">2024-01-14 14:20</div>
-                            </div>
-                            <div class="transaction-amount text-danger">
-                                -£200
+                            <div class="transaction-amount" th:classappend="${transaction.amountClass}" th:text="${transaction.formattedAmount}">
+                                £0
                             </div>
                         </div>
-
-                        <div class="transaction-item">
-                            <div class="transaction-icon bg-warning">
-                                <i class="bi bi-credit-card"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Online Shopping</div>
-                                <div class="transaction-account">DBS Bank ***1234</div>
-                                <div class="transaction-time">2024-01-13 16:45</div>
-                            </div>
-                            <div class="transaction-amount text-danger">
-                                -£85
-                            </div>
-                        </div>
-
-                        <div class="transaction-item">
-                            <div class="transaction-icon bg-info">
-                                <i class="bi bi-piggy-bank"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Savings Transfer</div>
-                                <div class="transaction-account">OCBC Bank ***9012</div>
-                                <div class="transaction-time">2024-01-13 10:00</div>
-                            </div>
-                            <div class="transaction-amount text-danger">
-                                -S$500
-                            </div>
-                        </div>
-
-                        <div class="transaction-item">
-                            <div class="transaction-icon bg-success">
-                                <i class="bi bi-arrow-down-left"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <div class="transaction-title">Interest Credit</div>
-                                <div class="transaction-account">Barclays ***5678</div>
-                                <div class="transaction-time">2024-01-12 00:05</div>
-                            </div>
-                            <div class="transaction-amount text-success">
-                                +£15
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <!-- When no transactions exist -->
+                    <div class="text-center py-5" th:if="${recentTransactions == null or recentTransactions.isEmpty()}">
+                        <i class="bi bi-receipt" style="font-size: 4rem; color: #dee2e6;"></i>
+                        <h5 class="mt-3 text-muted">No Transactions Yet</h5>
+                        <p class="text-muted mb-4">Your recent transactions will appear here once you start making transactions.</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#depositModal">
+                            <i class="bi bi-plus-circle me-2"></i>Make Your First Transaction
+                        </button>
                     </div>
                 </div>
             </div>

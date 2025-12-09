@@ -168,6 +168,7 @@ public class AuthRestController {
             }
 
             User targetUser = userRequest.toEntity(this.passwordEncoder.encode(userRequest.passwordHash()));
+            targetUser.setEmailVerified(true);
             User newUser = this.userService.addUser(targetUser);
 
             //TODO set the sign-up success response!

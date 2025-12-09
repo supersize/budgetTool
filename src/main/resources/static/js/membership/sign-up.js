@@ -402,7 +402,7 @@ $(document).ready(function() {
         if (patterns.password.special.test(password)) score++;
         else feedback.push('special');
 
-        const levels = ['weak', 'fair', 'good', 'good', 'strong', 'strong'];
+        const levels = ['weak', 'fair', 'fair', 'good', 'good', 'strong'];
         const level = levels[score] || 'weak';
 
         strengthContainer
