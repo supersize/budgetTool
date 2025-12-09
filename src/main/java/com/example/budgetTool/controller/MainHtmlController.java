@@ -1,6 +1,7 @@
 package com.example.budgetTool.controller;
 
 import com.example.budgetTool.model.dto.DashboardDto;
+import com.example.budgetTool.model.entity.User;
 import com.example.budgetTool.service.DashboardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,12 +39,7 @@ public class MainHtmlController {
         try {
             // Get current user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-                org.springframework.security.core.userdetails.User userDetails = 
-                    (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-                
-                // For now, we'll need to get userId from somewhere. You might need to modify this based on your UserDetails implementation
-                // Assuming you have a custom UserDetails that has getUserId() method
+            if (authentication != null && authentication.isAuthenticated()) {
                 Long userId = getUserIdFromAuthentication(authentication);
                 
                 if (userId != null) {
@@ -118,17 +114,18 @@ public class MainHtmlController {
 
     /**
      * Get user ID from authentication
-     * TODO: Implement this based on your UserDetails implementation
      */
     private Long getUserIdFromAuthentication(Authentication authentication) {
-        // This is a placeholder. You need to implement this based on your actual UserDetails class
-        // For example, if you have CustomUserDetails with getUserId():
-        // if (authentication.getPrincipal() instanceof CustomUserDetails) {
-        //     return ((CustomUserDetails) authentication.getPrincipal()).getUserId();
-        // }
-        
-        // For now, return null to show empty state
-        // You should implement proper user ID retrieval
+        try {
+            // Your AuthenticationHandler stores the User entity as the principal
+            if (authentication.getPrincipal() instanceof com.example.budgetTool.model.entity.User) {
+                com.example.budgetTool.model.entity.User user = 
+                    (com.example.budgetTool.model.entity.User) authentication.getPrincipal();
+                return user.getId();
+            }
+        } catch (Exception e) {
+            log.error("Error getting user ID from authentication", e);
+        }
         return null;
     }
 
