@@ -14,19 +14,19 @@ public class AuthHtmlController {
     @GetMapping("/login")
     public String goToLoginPage (HttpServletRequest request, HttpServletResponse response) {
 
-        return "/membership/login";
+        return "membership/login";
     }
 
     @GetMapping("/sign-up")
     public String goToSignUpPage (HttpServletRequest request, HttpServletResponse response) {
 
-        return "/membership/sign-up";
+        return "membership/sign-up";
     }
 
     @GetMapping("/forgot-password")
     public String goToForgotPasswordPage (HttpServletRequest request, HttpServletResponse response) {
 
-        return "/membership/forgot-password";
+        return "membership/forgot-password";
     }
 
 }
