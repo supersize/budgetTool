@@ -94,10 +94,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response
             , FilterChain filterChain) throws ServletException, IOException {
         try {
+            log.info("here you just entered in dofilter ");
             String currentAccessToken = JwtUtil.extractTokenFromRequest(request);
             // 토큰이 없으면 필터 체인 계속 진행 (다른 필터나 컨트롤러에서 처리)
             if (currentAccessToken == null) {
-                log.debug("No JWT token found in request");
+                log.info("No JWT token found in request");
                 filterChain.doFilter(request, response);
                 return;
             }
