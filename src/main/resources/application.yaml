@@ -3,8 +3,8 @@ spring:
     name: budgetTool
   datasource:
     driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/test01
-    url: jdbc:postgresql://localhost:5432/budget_tool
+    url: jdbc:postgresql://localhost:5432/test01
+#    url: jdbc:postgresql://localhost:5432/budget_tool
     username: postgres
     password: 6477
   jpa:

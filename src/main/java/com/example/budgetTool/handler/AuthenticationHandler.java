@@ -123,8 +123,8 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
         // access token
         String accessToken = JwtUtil.generateToken(email);
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true); // "false" if dev mode
+        accessTokenCookie.setHttpOnly(false);
+        accessTokenCookie.setSecure(false); // "false" if dev mode
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(60 * 60 * 24); // a day
         response.addCookie(accessTokenCookie);
