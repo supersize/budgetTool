@@ -103,14 +103,18 @@ public class AccountService {
             throw new IllegalArgumentException("Account cannot be null");
         }
         
-        // Check if account number already exists
+        // Check if account already exists
         List<FieldCondition> fconds = List.of(
                 new FieldCondition("accountNumber", 
                         Operator.EQ,
                         account.getAccountNumber(), 
                         LogicType.AND)
+                , new FieldCondition("bankName",
+                        Operator.EQ,
+                        account.getBankName(),
+                        LogicType.AND)
         );
-        
+
         if (this.accountRepository.exist(fconds)) {
             throw new IllegalArgumentException("Account number already exists: " + account.getAccountNumber());
         }

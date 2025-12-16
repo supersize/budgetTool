@@ -237,7 +237,7 @@ public class TransactionService {
      * @return Created Transaction entity
      */
     public Transaction processTransfer(Account fromAccount, String toAccountNumber,
-                                      String toAccountHolderName, BigDecimal amount, 
+                                      String toAccountHolderName, String ToBankName, BigDecimal amount,
                                       String transferMessage) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Transfer amount must be positive");
@@ -255,8 +255,9 @@ public class TransactionService {
 
         //update target account balance
         List<FieldCondition> fconds = new ArrayList<>();
-        fconds.add(new FieldCondition("user.id",  Operator.EQ, fromAccount.getUser().getId(), LogicType.AND));
+//        fconds.add(new FieldCondition("user.id",  Operator.EQ, fromAccount.getUser().getId(), LogicType.AND));
         fconds.add(new FieldCondition("accountNumber",  Operator.EQ, toAccountNumber, LogicType.AND));
+        fconds.add(new FieldCondition("bankName",  Operator.EQ, ToBankName, LogicType.AND));
         Account toAccount = this.accountService.getAccount(fconds, null);
         if (toAccount == null)
             throw new NullPointerException("To Account not found");

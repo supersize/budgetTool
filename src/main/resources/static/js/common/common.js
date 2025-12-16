@@ -241,6 +241,7 @@ function processWithdrawal() {
 function processTransfer() {
     const fromAccountId = $('#transferFromAccount').val();
     let toAccountNumber = $('#transferToAccount').val();
+    let toBankName = $('#transferToBankName').val();
     let result = toAccountNumber.split("-")
     toAccountNumber = '';
     for(var item of result)
@@ -256,6 +257,11 @@ function processTransfer() {
 
     if (!toAccountNumber) {
         showAlert('Please enter recipient account number', 'warning');
+        return;
+    }
+
+    if (!toBankName) {
+        showAlert('Please enter recipient account bank name', 'warning');
         return;
     }
 
@@ -276,6 +282,7 @@ function processTransfer() {
         fromAccountId: parseInt(fromAccountId),
         toAccountNumber: toAccountNumber,
         toAccountHolderName: toAccountHolderName,
+        toBankName: toBankName,
         amount: parseFloat(amount),
         transferMessage: transferMessage || ''
     };

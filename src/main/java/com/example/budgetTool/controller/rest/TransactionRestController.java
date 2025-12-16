@@ -7,6 +7,9 @@ import com.example.budgetTool.model.entity.Transaction;
 import com.example.budgetTool.model.entity.User;
 import com.example.budgetTool.service.AccountService;
 import com.example.budgetTool.service.TransactionService;
+import com.example.budgetTool.utils.querydsl.FieldCondition;
+import com.example.budgetTool.utils.querydsl.LogicType;
+import com.example.budgetTool.utils.querydsl.Operator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -250,11 +254,20 @@ public class TransactionRestController {
                 return ApiResponse.ERROR("You don't have permission to access this account");
             }
 
+            //confirm that target account is available
+            List<FieldCondition> fcond = new ArrayList<>();
+            fcond.add(new FieldCondition("accountNumber", Operator.EQ, request.toAccountNumber(), LogicType.AND));
+            fcond.add(new FieldCondition("bankName", Operator.EQ, request.toBankName(), LogicType.AND));
+
+            Account targetAccount = this.accountService.getAccount(fcond, null);
+            if(targetAccount == null) { return ApiResponse.ERROR("can't be found the receiver's account. Please check it again."); }
+
             // Process transfer
             Transaction transaction = transactionService.processTransfer(
                     fromAccount,
                     request.toAccountNumber(),
                     request.toAccountHolderName(),
+                    request.toBankName(),
                     request.amount(),
                     request.transferMessage()
             );

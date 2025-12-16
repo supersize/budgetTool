@@ -129,6 +129,7 @@ public record TransactionDto(
     public record TransferRequest(
             Long fromAccountId,
             String toAccountNumber,
+            String toBankName,
             String toAccountHolderName,
             BigDecimal amount,
 
