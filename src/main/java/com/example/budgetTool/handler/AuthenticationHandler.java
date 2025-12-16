@@ -132,17 +132,8 @@ public class AuthenticationHandler implements AuthenticationSuccessHandler, Auth
 
         // refresh token
         // don't have to set refreshToken on cookie
-//        String refreshToken = JwtUtil.generateRefreshToken(email);
-//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-//        refreshTokenCookie.setHttpOnly(true);
-//        refreshTokenCookie.setSecure(true);
-//        refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
-//        response.addCookie(refreshTokenCookie);
-//        this.redisService.setSingleData(REFRESH_TOKEN_PRIFIX + email, refreshToken);
-
-        //
-
+        String refreshToken = JwtUtil.generateRefreshToken(email);
+        this.redisService.setSingleData(REFRESH_TOKEN_PRIFIX + email, refreshToken);
 
 
         // Set response content type to JSON

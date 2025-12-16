@@ -9,8 +9,8 @@ spring:
     password: 6477
   jpa:
     hibernate:
-      ddl-auto: create-drop
-#      ddl-auto: none
+#      ddl-auto: create-drop
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:

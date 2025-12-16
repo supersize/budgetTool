@@ -6,6 +6,7 @@ import com.example.budgetTool.utils.JwtUtil;
 import jakarta.mail.AuthenticationFailedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -97,8 +98,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("here you just entered in dofilter ");
             String currentAccessToken = JwtUtil.extractTokenFromRequest(request);
             // 토큰이 없으면 필터 체인 계속 진행 (다른 필터나 컨트롤러에서 처리)
-            if (currentAccessToken == null) {
-                log.info("No JWT token found in request");
+            if (currentAccessToken == null ) {
+                log.info("No JWT token found in request or JWT token is not valid");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -109,21 +110,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new AuthenticationFailedException("Invalid JWT token");
             }
 
-            String userEmail = JwtUtil.getUserEmail(currentAccessToken);
-
-            String storedAccessToken = this.redisService.getSingleData(ACCESS_TOKEN_PRIFIX + userEmail);
-//            String storedRefreshToken = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + userEmail);
-            if(storedAccessToken == null) {
-//            if(storedAccessToken == null || storedRefreshToken == null) {
+            // values in Redis will be removed after time you've set.
+            String userEmail            = JwtUtil.getUserEmail(currentAccessToken);
+            String storedAccessToken    = this.redisService.getSingleData(ACCESS_TOKEN_PRIFIX + userEmail);
+            String storedRefreshToken   = this.redisService.getSingleData(REFRESH_TOKEN_PRIFIX + userEmail);
+            if(!JwtUtil.isTokenBlank(storedAccessToken) && !JwtUtil.isTokenBlank(storedRefreshToken)) {
                 log.error("JWT token does not exist in Redis for user: {}", userEmail);
                 throw new AuthenticationFailedException("JWT token does not exist.");
             }
 
-            //TODO generate new A,R tokens
-            if(!currentAccessToken.equals(storedAccessToken)){
+            //access token exists but is expired and refresh token does not exist.
+            if(!currentAccessToken.equals(storedAccessToken) && !JwtUtil.isTokenBlank(storedRefreshToken)) {
                 log.error("JWT token does not match for user: {}", userEmail);
                 throw new AuthenticationFailedException("JWT token does not match.");
             }
+
+            // other cases, just re-generate both tokens
+            // if user have a success to login, the login time will be automatically added 30 mins, and 24 hours respectively.
+            String newAccessToken = JwtUtil.generateToken(userEmail);
+            Cookie accessTokenCookie = new Cookie("accessToken", newAccessToken);
+            accessTokenCookie.setHttpOnly(false);
+            accessTokenCookie.setSecure(false); // "false" if dev mode
+            accessTokenCookie.setPath("/");
+            accessTokenCookie.setMaxAge(60 * 60 * 24); // a day
+            response.addCookie(accessTokenCookie);
+            this.redisService.setSingleData(ACCESS_TOKEN_PRIFIX + userEmail, newAccessToken);
+
+            String newRefreshToken = JwtUtil.generateRefreshToken(userEmail);
+            this.redisService.setSingleData(REFRESH_TOKEN_PRIFIX + userEmail, newRefreshToken);
 
             UserDetails userDetails = this.userService.loadUserByUsername(userEmail);
             UsernamePasswordAuthenticationToken authenticationToken

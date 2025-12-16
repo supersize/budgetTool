@@ -44,8 +44,8 @@ public class JwtUtil {
         return Jwts.builder()
 //                .setHeaderParam("kid", "test")
                 .setSubject(userEmail)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 mins
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 mins
 //                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 10)) // 10 sec
                 .signWith(KEY)
                 .compact();
@@ -54,7 +54,8 @@ public class JwtUtil {
 
     public static String generateRefreshToken(String userEmail) {
         return Jwts.builder()
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // a week
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // a week
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 )) // 24 hours
                 .signWith(KEY)
                 .compact();
     }
@@ -75,6 +76,12 @@ public class JwtUtil {
 
         return false;
     }
+
+    public static boolean isTokenBlank(String token) {
+        if(token == null || token.isBlank()) return false;
+        return true;
+    }
+
 
 
     public static String extractTokenFromRequest(HttpServletRequest request) {
