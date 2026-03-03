@@ -111,3 +111,14 @@ The motivation behind this decision is:
 - Improving understanding of multi-instance system behavior  
 
 By introducing Redisson, the application will be better prepared for scalable cloud deployment scenarios, while also reinforcing my DevOps and distributed system design capabilities.
+
+## ▶ ScreenShots
+![bt_account](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_account.png)
+![bt_dashboard](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_dashboard.png)
+![bt_transactionhistory](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_transactionHistory.png)
+
+<p align="center">
+  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_signup.png" width="30%" height="400" />
+  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_verification.png" width="30%" height="400" />
+  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_newaccount.png" width="30%" height="500" />
+</p>
