@@ -70,7 +70,7 @@ jobs:
           echo "AWS_REDIS_PORT=${{ secrets.AWS_REDIS_PORT }}" >> .env
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
           echo "CLIENT_SECRET_KEY=${{ secrets.CLIENT_SECRET_KEY }}" >> .env
-          zip -j ./$GITHUB_SHA.zip build/libs/picket.jar appspec.yml scripts/deploy.sh .env
+          zip -j ./$GITHUB_SHA.zip build/libs/budgetTool-0.0.1-SNAPSHOT.jar appspec.yml scripts/deploy.sh .env
         shell: bash
 
       # 8. AWS CLI 설정
