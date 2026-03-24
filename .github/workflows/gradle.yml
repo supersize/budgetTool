@@ -54,7 +54,7 @@ jobs:
       # 6. JAR 파일 검증
       - name: ✅ Verify JAR File
         run: |
-          if [ ! -f ./build/libs/budgetTool-0.0.1-SNAPSHOT-plain.jar ]; then
+          if [ ! -f ./build/libs/budgetTool-0.0.1-SNAPSHOT.jar ]; then
             echo "Error: No JAR file found in build/libs/"
             exit 1
           fi
