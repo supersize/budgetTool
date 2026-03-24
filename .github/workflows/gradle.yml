@@ -58,7 +58,7 @@ jobs:
             echo "Error: No JAR file found in build/libs/"
             exit 1
           fi
-          echo "JAR file found: $(ls ./build/libfs/*.jar)"
+          echo "JAR file found: $(ls ./build/libs/*.jar)"
 
       # 7. ZIP 파일 생성
       - name: 📦 Create ZIP for CodeDeploy
