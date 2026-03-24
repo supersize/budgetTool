@@ -70,7 +70,7 @@ jobs:
           echo "AWS_REDIS_PORT=${{ secrets.AWS_REDIS_PORT }}" >> .env
           echo "MAIL_SENDER_NAME=${{ secrets.MAIL_SENDER_NAME }}" >> .env
           echo "MAIL_SENDER_PASSWORD=${{ secrets.MAIL_SENDER_PASSWORD }}" >> .env
-          zip -j ./$GITHUB_SHA.zip build/libs/budgetTool-0.0.1-SNAPSHOT.jar appspec.yml scripts/deploy.sh .env
+          zip -j ./$GITHUB_SHA.zip build/libs/budgetTool-0.0.1-SNAPSHOT.jar appspec.yml deploy.sh .env
         shell: bash
 
       # 8. AWS CLI 설정
