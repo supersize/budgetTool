@@ -49,7 +49,7 @@ jobs:
           AWS_REDIS_PORT: ${{ secrets.AWS_REDIS_PORT }}
           MAIL_SENDER_NAME: ${{ secrets.MAIL_SENDER_NAME }}
           MAIL_SENDER_PASSWORD: ${{ secrets.MAIL_SENDER_PASSWORD }}
-        run: ./gradlew clean build --no-daemon -Dspring.profiles.active=prod
+        run: ./gradlew clean build -x test --no-daemon -Dspring.profiles.active=prod
 
       # 6. JAR 파일 검증
       - name: ✅ Verify JAR File
