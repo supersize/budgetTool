@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +40,9 @@ public class MainRestController {
      * To check CI/CD Health Check.
      * @return
      */
-    @GetMapping("/")
+    @GetMapping("/cicd/healthCheck")
     public ResponseEntity<String> goToMainPage () {
-        return ResponseEntity.ok("BudgetTool Health Check OK!!!");
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
