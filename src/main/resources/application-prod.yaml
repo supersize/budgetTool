@@ -17,8 +17,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   data:
     redis:
-      host: ${AWS_REDIS_URL}
-      port: ${AWS_REDIS_PORT}
+      cluster:
+        nodes:
+          - ${AWS_REDIS_URL}:${AWS_REDIS_PORT}
       ssl:
         enabled: true
 
