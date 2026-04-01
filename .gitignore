@@ -39,3 +39,8 @@ out/
 .claude
 
 **/src/main/resources/application.yaml
+
+### Terraform ###
+terraform/**/*.tfstate
+terraform/**/*.tfvars
+.terraform/
