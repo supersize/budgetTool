@@ -42,5 +42,7 @@ out/
 
 ### Terraform ###
 terraform/**/*.tfstate
+terraform/**/*.tfstate.backup
 terraform/**/*.tfvars
-.terraform/
+terraform/**/*.txt
+.terraform.lock.hcl
