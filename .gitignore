@@ -45,4 +45,5 @@ terraform/**/*.tfstate
 terraform/**/*.tfstate.backup
 terraform/**/*.tfvars
 terraform/**/*.txt
+.terraform/
 .terraform.lock.hcl
