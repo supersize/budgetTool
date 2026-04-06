@@ -26,7 +26,7 @@ permissions:
     group: ec2-user
     mode: '600'
     type:
-      - filee
+      - file
   - object: /home/ec2-user
     pattern: '**'
     owner: ec2-user
