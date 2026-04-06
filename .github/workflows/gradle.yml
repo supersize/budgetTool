@@ -84,10 +84,10 @@ jobs:
           echo "AWS_REDIS_PORT=${{ secrets.AWS_REDIS_PORT }}" >> .env
           echo "MAIL_SENDER_NAME=${{ secrets.MAIL_SENDER_NAME }}" >> .env
           echo "MAIL_SENDER_PASSWORD=\"${{ secrets.MAIL_SENDER_PASSWORD }}\"" >> .env
-          echo "GITHUB_SHA=\"${{ github.sha }}\"" >> .env
-          echo "DOCKERHUB_USERNAME=\"${{ DOCKERHUB_USERNAME }}\"" >> .env
-          echo "DOCKERHUB_PASSWORD=\"${{ DOCKERHUB_PASSWORD }}\"" >> .env
-          echo "DOCKERHUB_REPOSITORY=\"${{ DOCKERHUB_REPOSITORY }}\"" >> .env
+          echo "GITHUB_SHA=${{ github.sha }}" >> .env
+          echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env
+          echo "DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}" >> .env
+          echo "DOCKERHUB_REPOSITORY=${{ secrets.DOCKERHUB_REPOSITORY }}" >> .env
           zip -j ./$GITHUB_SHA.zip appspec.yml scripts/deploy.sh .env docker-compose.yml
         shell: bash
 
