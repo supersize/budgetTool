@@ -118,7 +118,6 @@ jobs:
             --deployment-group-name ${{ secrets.DEPLOYMENT_GROUP_NAME }} \
             --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},key=applications/${{ secrets.APPLICATION_NAME }}-${VERSION_TAG}.zip,bundleType=zip \
             --file-exists-behavior OVERWRITE \
-            --auto-rollback-configuration enabled=true,events=DEPLOYMENT_FAILURE \
             --query 'deploymentId' --output text)
           echo "Deployment ID: $DEPLOYMENT_ID"
           aws deploy wait deployment-successful --deployment-id $DEPLOYMENT_ID
