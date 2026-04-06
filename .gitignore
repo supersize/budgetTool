@@ -48,3 +48,5 @@ terraform/**/*.txt
 .terraform/**/*
 .terraform/
 .terraform.lock.hcl
+
+scripts/test/**/*

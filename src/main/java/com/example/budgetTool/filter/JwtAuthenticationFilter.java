@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/bootstrap",
             "/Auth",
             "/cicd",
+            "/actuator",
             "/favicon.ico"
     );
 

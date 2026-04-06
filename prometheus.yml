@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 15s # collect data every 15s
+
+scrape_configs:
+  - job_name: 'Prometheus : collecting data from budgetTool'
+    metrics_path: '/budgetTool/actuator/prometheus'
+    static_configs:
+      # - targets: ['192.168.0.100:8080'] #컨테이너 외부의 Spring App :IP 및 Port 지정
+       - targets: ['app-1:8080', 'app-2:8080']
+#      - targets: ['host.docker.internal:8080']  #같은 네트워크 컨테이너 상의 Spring App : "컨테이너명:Port"로 지정

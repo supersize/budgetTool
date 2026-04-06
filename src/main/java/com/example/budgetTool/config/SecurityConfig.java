@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .addFilterAfter(loginPageRedirectFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
-                        .requestMatchers("/login", "/Auth/**", "/sign-up", "/auth/**", "/cicd/**").permitAll()
+                        .requestMatchers("/login", "/Auth/**", "/sign-up", "/auth/**", "/cicd/**", "/actuator/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/bootstrap/**").permitAll()
                         .requestMatchers("/error", "/404", "/403", "/500").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

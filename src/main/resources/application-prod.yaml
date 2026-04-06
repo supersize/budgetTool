@@ -71,3 +71,10 @@ error:
 token:
   access: AC_
   refresh: REF_
+
+# mibrometer config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
