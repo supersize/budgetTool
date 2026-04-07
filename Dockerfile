@@ -12,4 +12,4 @@ COPY build/libs/budgetTool-0.0.1-SNAPSHOT.jar budgetTool.jar
 
 # Step 4: Run the application with memory-efficient flags for t3.micro
 # -XX:MaxRAMPercentage=75.0 helps Java stay within Docker's memory limits
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "budgetTool.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "budgetTool.jar", "--spring.profiles.active=prod"]
