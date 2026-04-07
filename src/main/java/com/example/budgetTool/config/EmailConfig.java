@@ -28,11 +28,11 @@ public class EmailConfig {
     @Value("${spring.mail.port}")
     private int port;
 
-    @Value("${spring.mail.username}")
-    private String username;
-
-    @Value("${spring.mail.password}")
-    private String password;
+//    @Value("${spring.mail.username}")
+//    private String username;
+//
+//    @Value("${spring.mail.password}")
+//    private String password;
 
     @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean auth;
@@ -58,8 +58,8 @@ public class EmailConfig {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
+        mailSender.setUsername("kimjaehyeong92@gmail.com");
+        mailSender.setPassword("sqmk norh jxms onwm");
         mailSender.setDefaultEncoding("UTF-8");
         mailSender.setJavaMailProperties(getMailProperties());
 
