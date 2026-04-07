@@ -17,8 +17,6 @@ services:
   # 2 & 3. Spring Boot Applications
   app-1: &app-base
     image: ${DOCKERHUB_USERNAME}/jhk_docker_hub_repo:${GITHUB_SHA}
-    env_file:
-      - .env
 #    environment:
 #      - AWS_RDS_URL=${AWS_RDS_URL}
 #      - AWS_RDS_USERNAME=${AWS_RDS_USERNAME}

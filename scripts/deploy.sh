@@ -26,16 +26,16 @@ CURRENT_TIME=$(date +"%T")
 #  exit 1
 #fi
 
-# 환경 변수 로드
-if [ -f /home/ec2-user/.env ]; then
-  echo "Loading environment variables from .env"
-  set -a
-  source /home/ec2-user/.env
-  set +a
-else
-  echo "Error: .env file not found"
-  exit 1
-fi
+## 환경 변수 로드
+#if [ -f /home/ec2-user/.env ]; then
+#  echo "Loading environment variables from .env"
+#  set -a
+#  source /home/ec2-user/.env
+#  set +a
+#else
+#  echo "Error: .env file not found"
+#  exit 1
+#fi
 
 # 1. Move to the directory where docker-compose.yml is located
 cd /home/ec2-user # Replace with your actual path
