@@ -38,7 +38,7 @@ else
 fi
 
 # 1. Move to the directory where docker-compose.yml is located
-cd /home/ec2-user/app # Replace with your actual path
+cd /home/ec2-user # Replace with your actual path
 
 echo "[$CURRENT_TIME] Starting Deployment..."
 
