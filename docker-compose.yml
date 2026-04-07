@@ -16,7 +16,7 @@ services:
 
   # 2 & 3. Spring Boot Applications
   app-1: &app-base
-    image: ${DOCKERHUB_USERNAME}/budgetTool:latest
+    image: ${DOCKERHUB_USERNAME}/jhk_docker_hub_repo:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db-master:5432/postgres
       - SPRING_REDIS_HOST=redis
