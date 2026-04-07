@@ -88,7 +88,7 @@ jobs:
           echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env
           echo "DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}" >> .env
           echo "DOCKERHUB_REPOSITORY=${{ secrets.DOCKERHUB_REPOSITORY }}" >> .env
-          zip -j ./$GITHUB_SHA.zip appspec.yml scripts/deploy.sh .env docker-compose.yml
+          zip -j ./$GITHUB_SHA.zip appspec.yml scripts/deploy.sh .env docker-compose.yml nginx.conf prometheus.yml
         shell: bash
 
       #  AWS CLI 설정
