@@ -22,11 +22,11 @@ import java.util.Properties;
 @Configuration
 @Slf4j
 public class EmailConfig {
-    @Value("${spring.mail.host}")
-    private String host;
-
-    @Value("${spring.mail.port}")
-    private int port;
+//    @Value("${spring.mail.host}")
+//    private String host;
+//
+//    @Value("${spring.mail.port}")
+//    private int port;
 
 //    @Value("${spring.mail.username}")
 //    private String username;
@@ -56,8 +56,8 @@ public class EmailConfig {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(host);
-        mailSender.setPort(port);
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
         mailSender.setUsername("kimjaehyeong92@gmail.com");
         mailSender.setPassword("sqmk norh jxms onwm");
         mailSender.setDefaultEncoding("UTF-8");
