@@ -50,8 +50,8 @@ docker compose pull
 # 3. Down and Up (The simplest way to refresh)
 # --remove-orphans deletes containers not defined in the current docker-compose.yml
 echo "Restarting containers..."
-docker compose down --remove-orphans
-docker compose up -d
+docker compose --env-file /home/ec2-user/.env down --remove-orphans
+docker compose --env-file /home/ec2-user/.env up -d
 
 # 4. Cleanup unused images to save disk space (T3.micro has limited space!)
 echo "Cleaning up old images..."

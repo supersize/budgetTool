@@ -25,6 +25,8 @@ services:
       - AWS_REDIS_PORT=${AWS_REDIS_PORT}
       - MAIL_SENDER_NAME=${MAIL_SENDER_NAME}
       - MAIL_SENDER_PASSWORD=${MAIL_SENDER_PASSWORD}
+    depends_on:
+      - redis
     deploy:
       resources:
         limits:
