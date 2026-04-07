@@ -18,8 +18,13 @@ services:
   app-1: &app-base
     image: ${DOCKERHUB_USERNAME}/jhk_docker_hub_repo:${GITHUB_SHA}
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-master:5432/postgres
-      - SPRING_REDIS_HOST=redis
+      - AWS_RDS_URL=${AWS_RDS_URL}
+      - AWS_RDS_USERNAME=${AWS_RDS_USERNAME}
+      - AWS_RDS_PASSWORD=${AWS_RDS_PASSWORD}
+      - AWS_REDIS_URL=${AWS_REDIS_URL}
+      - AWS_REDIS_PORT=${AWS_REDIS_PORT}
+      - MAIL_SENDER_NAME=${MAIL_SENDER_NAME}
+      - MAIL_SENDER_PASSWORD=${MAIL_SENDER_PASSWORD}
     deploy:
       resources:
         limits:
