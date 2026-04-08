@@ -35,6 +35,11 @@ services:
           memory: 200M
     networks:
       - budgetTool-docker-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"   # 로그 파일 하나당 최대 10MB
+        max-file: "3"     # 파일은 최대 3개까지만 보관 (총 30MB 제한)
 
   app-2:
     <<: *app-base
@@ -88,6 +93,8 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin # Default password
+      - GF_SERVER_ROOT_URL=https://jhkarchive.com/grafana/  # 본인 도메인 입력
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true                 # 하위 경로 사용 여부
     deploy:
       resources:
         limits:
