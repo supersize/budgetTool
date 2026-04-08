@@ -61,17 +61,3 @@ docker system prune -f
 
 echo "[$CURRENT_TIME] Deployment completed successfully!"
 
-# 5. Wait for Spring Boot Actuator to be ready
-echo "Waiting for application to start..."
-for i in {1..10}; do
-  # Adjust the URL to match your context path and port
-  STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/budgetTool/actuator/health)
-  if [ "$STATUS" -eq 200 ]; then
-    echo "Application is UP!"
-    break
-  else
-    echo "Still waiting... (Attempt $i/10)"
-    sleep 5
-  fi
-done
-

@@ -82,6 +82,13 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true                 # 하위 경로 사용 여부
       - GF_SERVER_PROTOCOL=http
       - GF_SERVER_DOMAIN=jhkarchive.com # 도메인 명시
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=${MAIL_SENDER_NAME}
+      - GF_SMTP_PASSWORD=${MAIL_SENDER_PASSWORD}
+      - GF_SMTP_FROM_ADDRESS=${MAIL_SENDER_NAME}
+      - GF_SMTP_FROM_NAME=Grafana Alert
+      - GF_SMTP_SKIP_VERIFY=false
     deploy:
       resources:
         limits:
