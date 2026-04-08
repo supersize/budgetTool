@@ -25,11 +25,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
     private static final Logger log = LoggerFactory.getLogger(RedisConfig.class);
-//    @Value("${spring.data.redis.host}")
-//    private String host;
+    @Value("${spring.data.redis.host}")
+    private String host;
 
-//    @Value("${spring.data.redis.port}")
-//    private int port;
+    @Value("${spring.data.redis.port}")
+    private int port;
 
 
     /**
@@ -39,7 +39,7 @@ public class RedisConfig {
      */
     @Bean
     public RedisConnectionFactory getConnectionFactory() {
-        return new LettuceConnectionFactory();
+        return new LettuceConnectionFactory(host, port);
     }
 
 

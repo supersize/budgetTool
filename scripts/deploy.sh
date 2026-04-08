@@ -54,8 +54,10 @@ docker compose --env-file /home/ec2-user/.env down --remove-orphans
 docker compose --env-file /home/ec2-user/.env up -d
 
 # 4. Cleanup unused images to save disk space (T3.micro has limited space!)
-echo "Cleaning up old images..."
-docker image prune -f
+# docker system prune removes containers, cache, images, networks not in-use!!!
+#echo "Cleaning up old images..."
+echo "Cleaning up systeem..."
+docker system prune -f
 
 echo "[$CURRENT_TIME] Deployment completed successfully!"
 
