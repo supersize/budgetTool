@@ -1,5 +1,6 @@
 package com.example.budgetTool.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import java.util.Properties;
  * 10/21/25        kimjaehyeong       created
  */
 @Configuration
+@Slf4j
 public class EmailConfig {
     @Value("${spring.mail.host}")
     private String host;
@@ -53,6 +55,21 @@ public class EmailConfig {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
+        //TODO have to remoe pa
+        log.info("=== Email Config ===");
+        log.info("host: {}", host);
+        log.info("port: {}", port);
+        log.info("username: {}", username);
+//        log.info("password: {}", password != null ? "LOADED" : "NULL");  // don't log actual password!
+        log.info("password: {}", password);
+        log.info("auth: {}", auth);
+        log.info("starttlsEnable: {}", starttlsEnable);
+        log.info("starttlsRequired: {}", starttlsRequired);
+        log.info("connectionTimeout: {}", connectionTimeout);
+        log.info("timeout: {}", timeout);
+        log.info("writeTimeout: {}", writeTimeout);
+        log.info("====================");
+
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);
