@@ -95,6 +95,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin # Default password
       - GF_SERVER_ROOT_URL=https://jhkarchive.com/grafana/  # 본인 도메인 입력
       - GF_SERVER_SERVE_FROM_SUB_PATH=true                 # 하위 경로 사용 여부
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_DOMAIN=jhkarchive.com # 도메인 명시
     deploy:
       resources:
         limits:
