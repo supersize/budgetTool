@@ -17,7 +17,7 @@ The project is built on a scalable cloud-native architecture, ensuring high avai
 ## Tech Stack
 
 ### Backend & Database
-- **Core:** Java 17, Spring Boot 3.x, Spring Security
+- **Core:** Java 17, Spring Boot 3.5.5, Spring Security
 - **Data:** JPA (Hibernate), Querydsl, PostgreSQL (PostGIS)
 - **Caching:** Redis
 
