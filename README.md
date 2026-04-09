@@ -1,124 +1,102 @@
-# 💰 Budget Tool
+# Budget Tool (JHKArchive)
 
-**Budget Tool** is a personal finance web application designed to manage monthly budgets and track expenses.
-
-This project was developed not only to implement CRUD functionality, but also to practice building a structured and extensible backend application with security and scalability in mind.
+**Budget Tool** is a robust personal finance backend application designed for efficient monthly budget management and expense tracking. This project emphasizes high-performance infrastructure, cloud-native design, and automated deployment.
 
 ---
 
-## 📌 Project Goals
+## System Architecture
 
-- Strengthen backend development skills using Spring Boot  
-- Practice domain modeling (Budget ↔ Expense relationship)  
-- Design a maintainable layered architecture  
-- Apply security best practices suitable for financial applications  
-- Prepare for future cloud-based and distributed deployment  
+The project is built on a scalable cloud-native architecture, ensuring high availability and secure data flow.
 
----
+![System Architecture](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/budgetTool_cloud_arch_diagram.png)
 
-## 🛠 Tech Stack
-
-### Backend
-- Java  
-- Spring Boot  
-- Spring Security  
-- JPA  
-- Gradle  
-
-### Database
-- PostgreSQL  
-
-### Infrastructure / Middleware
-- Docker  
-- Redis  
-
-### Frontend
-- HTML  
-- CSS  
-- JavaScript  
+> **Note:** This architecture separates the presentation layer (ALB) from the application logic (EC2) and data storage (RDS/Redis), following AWS best practices for security and performance.
 
 ---
 
-## 🔐 Security Design
+## Tech Stack
 
-This project uses **Spring Security** to ensure that the application follows established security standards.
+### Backend & Database
+- **Core:** Java 17, Spring Boot 3.x, Spring Security
+- **Data:** JPA (Hibernate), Querydsl, PostgreSQL (PostGIS)
+- **Caching:** Redis
 
-In financial-related applications, security is critical. Instead of implementing custom authentication and authorization logic, I chose to use Spring Security because:
-
-- It is a widely adopted and well-tested security framework  
-- It helps prevent common vulnerabilities  
-- It supports scalable and extensible security configurations  
-- It aligns with enterprise-level application security practices  
-
-This design decision prioritizes reliability, maintainability, and future extensibility over building ad-hoc security mechanisms.
-
----
-
-## ✨ Key Features
-
-- Monthly budget creation and management  
-- Expense registration / update / deletion  
-- Category-based expense classification  
-- Budget vs. actual spending comparison  
-- Monthly expense tracking  
+### Infrastructure & DevOps
+- **Cloud:** AWS (EC2, RDS, ALB, S3)
+- **IAC:** Terraform (Manual Provisioning)
+- **CI/CD:** GitHub Actions, Docker
+- **Monitoring/Testing:** k6 (Load Testing)
 
 ---
 
-## 🗂 Architecture Overview
+## CI/CD Pipeline
 
-- Layered structure (Controller – Service – Repository)  
-- DTO-based request/response separation  
-- Domain relationship modeling (Budget ↔ Expense)  
-- Validation handling  
-- Security configuration via Spring Security  
+The deployment process is automated using GitHub Actions, ensuring a seamless transition from code to production while maintaining infrastructure stability through Terraform.
 
-The application is structured to allow future integration with authentication mechanisms such as JWT and distributed session management.
+![CI/CD Pipeline](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/budgetTool_cicd_pipeline.png)
 
----
-
-## ⚙ Prerequisites
-
-Before running the application, make sure the following are installed:
-
-- Java 17+  
-- Docker  
-- Redis
-- Postgre15
-
-Redis is used (or planned to be used) to support distributed system design considerations such as caching and distributed locking.
+- **Manual Infrastructure:** Infrastructure is managed via Terraform (`init`, `plan`, `apply`) to ensure controlled changes.
+- **Automated Workflow:** Every push triggers a GitHub Action that builds the Spring Boot JAR, packages it as a Docker image, and deploys it to AWS EC2 using a Blue/Green strategy.
 
 ---
 
-## ▶ How to Run
+## 📊 Performance & Load Testing
 
-### 1. Start Redis & postgres (using Docker)
+To ensure the application can handle production-level traffic, I conducted stress tests using **k6**.
+
+### Load Test Execution (50 VUs / 30s)
+![Load Testing](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/load-test.gif)
+
+- **Scenario:** Simulated 50 concurrent virtual users (VUs) accessing the production endpoint for 30 seconds.
+- **Goal:** To measure the stability of the Spring Boot application and the response latency under load.
+- **Outcome:** Successfully maintained stable performance with zero request failures during the peak load.
+
+---
+
+## Key Features & Technical Decisions
+
+- **Domain Modeling:** Complex relationship management between Budgets and Expenses.
+- **Security First:** Implemented Spring Security to align with enterprise-level financial standards.
+- **Distributed Locking:** Planned integration of **Redisson** for data consistency and concurrency control in multi-instance environments.
+- **Scalability:** Designed with an Application Load Balancer (ALB) to support future horizontal scaling.
+
+---
+
+## ⚙ Prerequisites & Installation
+
+### Environment
+- Java 17+
+- Docker & Docker Compose
+- PostgreSQL 15 / Redis
+
+### How to Run (Local)
 
 ```bash
-docker run -d -p 6379:6379 --name budget-redis redis
-docker run -d -p 5432:5432 --name budget-postgres postgres
+# 1. Start Infrastructure (PostgreSQL & Redis)
+docker-compose up -d
+
+# 2. Run Application
 ./gradlew bootRun
 ```
-## ☁ Cloud & Distributed System Considerations
 
-To further enhance my cloud engineering capabilities and ensure data consistency in distributed environments, I am planning to introduce **Redisson** (Redis-based distributed toolkit).
+---
 
-The motivation behind this decision is:
+## Key Features & Technical Decisions
 
-- Strengthening cloud-native development skills  
-- Ensuring data consistency in distributed environments  
-- Supporting distributed locking mechanisms  
-- Preparing the application for horizontal scaling  
-- Improving understanding of multi-instance system behavior  
+- **Domain Modeling:** Complex relationship management between Budgets and Expenses.
+- **Security First:** Implemented Spring Security to align with enterprise-level financial standards.
+- **Distributed Locking:** Planned integration of **Redisson** for data consistency and concurrency control in multi-instance environments.
+- **Scalability:** Designed with an Application Load Balancer (ALB) to support future horizontal scaling.
 
-By introducing Redisson, the application will be better prepared for scalable cloud deployment scenarios, while also reinforcing my DevOps and distributed system design capabilities.
+### Project Screenshots (UI)
 
-## ▶ ScreenShots
-![bt_account](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_account.png)
-![bt_dashboard](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_dashboard.png)
-![bt_transactionhistory](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_transactionHistory.png)
+| Dashboard & History | Account & Finance |
+|:---:|:---:|
+| ![Dashboard](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_dashboard.png) | ![Account](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_account.png) |
+| *Main dashboard showing overview* | *Managing account-specific finances* |
 
-<p align="center">
-  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_signup.png" width="30%" height="400" />
-  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_verification.png" width="30%" height="400" />
-  <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_newaccount.png" width="30%" height="500" />
-</p>
+| User Onboarding | Verification Process | New Account |
+|:---:|:---:|:---:|
+| <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_signup.png" width="250"/> | <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_verification.png" width="250"/> | <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/bt_newaccount.png" width="250"/> |
+
+---
