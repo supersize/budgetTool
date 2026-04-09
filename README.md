@@ -44,13 +44,17 @@ The deployment process is automated using GitHub Actions, ensuring a seamless tr
 
 To ensure the application can handle production-level traffic, I conducted stress tests using **k6**.
 
-### Load Test Execution (50 VUs / 30s)
+### Load Test Execution (500 VUs / 30s) | Automated Email Alert |
 ![Load Testing](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/load-test.gif)
+|:---:|:---:|
+| ![k6 Load Test](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/load-test.gif) | ![Email Alert](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/grafana_email_alert.png) |
+| *Simulated traffic on production endpoint* | *Alert triggered by high CPU/Memory usage* |
 
-- **Scenario:** Simulated 50 concurrent virtual users (VUs) accessing the production endpoint for 30 seconds.
+- **Scenario:** Simulated 500 concurrent virtual users (VUs) accessing the production endpoint for 30 seconds.
 - **Goal:** To measure the stability of the Spring Boot application and the response latency under load.
-- **Outcome:** Successfully maintained stable performance with zero request failures during the peak load.
-
+- **Result:**
+  - Successfully maintained stable performance with zero request failures during the peak load.
+- **Monitoring:** An automated email alert was successfully triggered when the system detected high resource utilization during the stress test, confirming the robustness of the monitoring setup.
 ---
 
 ## Key Features & Technical Decisions
