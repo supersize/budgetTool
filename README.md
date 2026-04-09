@@ -44,9 +44,9 @@ The deployment process is automated using GitHub Actions, ensuring a seamless tr
 
 To ensure the application can handle production-level traffic, I conducted stress tests using **k6**.
 
-### Load Test Execution (500 VUs / 60s) | Automated Email Alert |
+| Load Test (500 VUs / 60s) | Automated Email Alert |
 |:---:|:---:|
-| ![k6 Load Test](https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/load-test.gif) | ![Email Alert](<img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/grafana_email_alert.png" width="250"/>) |
+| <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/load-test.gif" width="400" /> | <img src="https://github.com/supersize/budgetTool/blob/main/src/main/resources/static/grafana_email_alert.png" width="400" /> |
 | *Simulated traffic on production endpoint* | *Alert triggered by high CPU/Memory usage* |
 
 - **Scenario:** Simulated 500 concurrent virtual users (VUs) accessing the production endpoint for 60 seconds.
