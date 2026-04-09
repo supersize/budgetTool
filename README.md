@@ -1,5 +1,8 @@
 # Budget Tool (JHKArchive)
 
+[![Website](https://img.shields.io/badge/Website-jhkarchive.com-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://jhkarchive.com/main)
+[![Status](https://img.shields.io/badge/Status-Online-brightgreen?style=for-the-badge)](https://jhkarchive.com/main)
+
 **Budget Tool** is a robust personal finance backend application designed for efficient monthly budget management and expense tracking. This project emphasizes high-performance infrastructure, cloud-native design, and automated deployment.
 
 ---
